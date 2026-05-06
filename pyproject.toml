@@ -1,0 +1,232 @@
+# ============================================================
+# PROJECT METADATA
+# ============================================================
+[tool.poetry]
+name = "shopforge"
+version = "0.1.0"
+description = "A corporate-grade e-commerce platform built with Django + Vue 3"
+authors = ["S&M <team@sm.dev>"]
+readme = "README.md"
+
+# ============================================================
+# PYTHON DEPENDENCIES
+# ============================================================
+[tool.poetry.dependencies]
+python = "^3.11"
+
+# Django ecosystem
+Django = "~4.2"                          # LTS version - security patches until April 2026
+djangorestframework = "^3.14"            # REST API framework
+django-environ = "^0.11"                 # Environment variables made easy
+django-model-utils = "^4.3"             # TimeStampedModel, StatusModel, etc.
+django-filter = "^23.5"                  # Queryset filtering for DRF
+django-cors-headers = "^4.3"            # CORS headers for API
+django-extensions = "^3.2"              # shell_plus, show_urls, etc.
+drf-spectacular = "^0.27"               # OpenAPI 3.0 schema generation
+
+# Database
+psycopg2-binary = "^2.9"                # PostgreSQL adapter (binary for dev speed)
+
+# Caching & Task Queue
+redis = "^5.0"                           # Redis client
+django-redis = "^5.4"                    # Django cache backend for Redis
+celery = {version = "^5.3", extras = ["redis"]}  # Task queue with Redis broker
+
+# Security & Auth
+django-allauth = "^0.61"                # Authentication (social, email, etc.)
+djangorestframework-simplejwt = "^5.3"  # JWT tokens for API auth
+
+# Utilities
+Pillow = "^10.2"                         # Image processing
+django-storages = "^1.14"               # Cloud storage backends (S3, GCS, etc.)
+gunicorn = "^22.0"                       # Production WSGI server
+whitenoise = "^6.6"                      # Static file serving
+sentry-sdk = "^1.40"                     # Error monitoring
+cryptography = ">=43.0"                  # Cryptographic recipes
+
+# ============================================================
+# DEVELOPMENT DEPENDENCIES
+# ============================================================
+[tool.poetry.group.dev.dependencies]
+# Testing
+pytest = "^8.0"
+pytest-django = "^4.7"
+pytest-celery = "^0.0"
+pytest-sugar = "^1.0"                    # Pretty test output
+pytest-cov = "^4.1"                      # Coverage integration
+model-bakery = "^1.17"                   # Test fixture factories
+requests-mock = "^1.11"                  # Mock HTTP requests in tests
+factory-boy = "^3.3"                     # Advanced test factories
+
+# Code Quality
+black = "^24.0"                          # Code formatter
+isort = "^5.13"                          # Import sorter
+flake8 = "^7.0"                          # Linter
+pylint = "^3.0"                          # Advanced linter
+pylint-django = "^2.5"                   # Django-specific pylint rules
+pylint-celery = "^0.3"                   # Celery-specific pylint rules
+interrogate = "^1.5"                     # Docstring coverage checker
+mypy = "^1.8"                            # Static type checker
+django-stubs = "^4.2"                    # Type stubs for Django
+
+# Development Tools
+django-debug-toolbar = "^4.2"            # SQL query inspector, profiler
+watchfiles = "^0.21"                     # Fast file watcher for auto-reload
+debugpy = "^1.8"                         # VS Code Python debugger
+ipython = "^8.20"                        # Enhanced Python shell
+django-coverage-plugin = "^3.1"         # Coverage for Django templates
+pre-commit = "^3.6"                      # Git hook framework
+uvicorn = {version = "^0.27", extras = ["standard"]}  # ASGI server for dev
+
+# Documentation
+mkdocs = "^1.5"
+mkdocs-material = "^9.5"
+mkdocstrings = {version = "^0.24", extras = ["python"]}
+
+# Django-Vite for frontend integration
+django-vite = "^3.0"
+
+# ============================================================
+# TOOL CONFIGURATION: BLACK (Code Formatter)
+# ============================================================
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+force-exclude = """
+/(
+  | migrations
+  | venv
+  | node_modules
+)/
+"""
+
+# ============================================================
+# TOOL CONFIGURATION: ISORT (Import Sorter)
+# ============================================================
+[tool.isort]
+profile = "black"
+atomic = true
+line_length = 120
+known_django = ["django", "rest_framework"]
+known_first_party = ["shopforge"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "DJANGO", "FIRSTPARTY", "LOCALFOLDER"]
+
+# ============================================================
+# TOOL CONFIGURATION: INTERROGATE (Docstring Coverage)
+# ============================================================
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = true
+ignore-magic = true
+ignore-semiprivate = false
+ignore-private = false
+ignore-property-decorators = false
+ignore-module = false
+ignore-nested-functions = false
+ignore-nested-classes = true
+ignore-setters = false
+fail-under = 70
+exclude = ["docs/", "*/migrations/", "urls.py", "tests/", "test_*", "scripts/"]
+verbose = 2
+quiet = false
+color = true
+omit-covered-files = true
+
+# ============================================================
+# TOOL CONFIGURATION: PYTEST
+# ============================================================
+[tool.pytest.ini_options]
+testpaths = ["shopforge/tests"]
+addopts = [
+    "-vv",                      # Extra verbose output
+    "--durations=25",           # Show 25 slowest tests
+    "--durations-min=1.0",      # Only show tests slower than 1 second
+    "--ds=config.settings.test", # Django settings module for tests
+    "--reuse-db",               # Don't recreate DB every run (HUGE speed boost)
+    "--capture=no",             # Show print() output during tests
+    "--disable-pytest-warnings", # Less noise
+]
+norecursedirs = ["venv/*", ".git", "node_modules"]
+python_files = ["tests.py", "test_*.py"]
+filterwarnings = [
+    "ignore::django.utils.deprecation.RemovedInDjango50Warning",
+    "ignore::django.utils.deprecation.RemovedInDjango51Warning",
+]
+
+# ============================================================
+# TOOL CONFIGURATION: COVERAGE
+# ============================================================
+[tool.coverage.run]
+branch = true
+omit = [
+    "**/migrations/*",
+    "**/tests/*",
+    "**/urls.py",
+    "manage.py",
+    "config/*",
+]
+plugins = ["django_coverage_plugin"]
+relative_files = true
+
+[tool.coverage.report]
+skip_empty = true
+precision = 4
+fail_under = 85.0
+show_missing = true
+skip_covered = true
+omit = [
+    "**/migrations/*",
+    "**/tests/*",
+    "**/urls.py",
+    "manage.py",
+]
+
+# ============================================================
+# TOOL CONFIGURATION: PYLINT
+# ============================================================
+[tool.pylint.'MASTER']
+load-plugins = ["pylint_django", "pylint_celery"]
+
+[tool.pylint.FORMAT]
+max-line-length = 120
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = "all"
+enable = [
+    "C0123",  # unidiomatic-typecheck (use isinstance, not type())
+    "C1802",  # use-implicit-booleaness-not-len (use `if items:` not `if len(items):`)
+    "E0601",  # used-before-definition
+    "E0602",  # undefined-variable
+    "E0603",  # undefined-all-variable
+    "E0606",  # possibly-used-before-assignment
+    "E0710",  # raising-non-exception
+    "E0712",  # catching-non-exception
+    "E1111",  # assignment-from-no-return
+    "E1140",  # unhashable-dict-key
+    "E1141",  # dict-iter-missing-items
+    "E1121",  # too-many-function-args
+    "E1123",  # unexpected-keyword-arg
+    "W0719",  # broad-exception-raised
+]
+
+[tool.pylint.'DESIGN']
+max-parents = 13
+
+[tool.pylint.'TYPECHECK']
+generated-members = [
+    "REQUEST",
+    "acl_users",
+    "aq_parent",
+    "[a-zA-Z]+_set{1,2}",
+    "save",
+    "delete",
+]
+
+# ============================================================
+# TOOL CONFIGURATION: VULTURE (Dead Code Detection)
+# ============================================================
+[tool.vulture]
+exclude = ["migrations/"]
+min_confidence = 70
+paths = ["shopforge"]
+sort_by_size = true
