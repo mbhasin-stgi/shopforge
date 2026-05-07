@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+# ============================================================
+# Run migrations automatically
+# ============================================================
+echo "Applying database migrations..."
+python manage.py migrate --noinput
+
+# ============================================================
+# Collect static files (for admin, DRF browsable API)
+# ============================================================
+echo "Collecting static files..."
+python manage.py collectstatic --noinput --clear 2>/dev/null || true
+
+# ============================================================
+# Start Django development server
+# ============================================================
+echo "Starting Django development server..."
+python manage.py runserver 0.0.0.0:8000

@@ -1,0 +1,43 @@
+# ============================================================
+# Optimized for CI: no volumes, no ports, no dev tools
+# ============================================================
+volumes:
+  postgres_data:
+
+services:
+  django: &django
+    container_name: shopforge_django
+    build:
+      context: ..
+      dockerfile: ./compose/local/django/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - ../.env
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.test
+      - PYTHONPATH=/app
+    # No volume mount — code is COPIED into image (faster in CI)
+    # No ports — tests don't need external access
+
+  postgres:
+    image: postgres:17
+    container_name: shopforge_postgres
+    env_file:
+      - ./.envs/.local/.postgres
+    environment:
+      - PGDATA=/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:6-alpine
+    container_name: shopforge_redis

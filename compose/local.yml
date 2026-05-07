@@ -1,0 +1,142 @@
+# ============================================================
+# PERSISTENT STORAGE
+# ============================================================
+volumes:
+  postgres_data:       # Survives container restarts (your DB data!)
+  redis_data:          # Redis persistence (optional, for cache durability)
+
+# ============================================================
+# NETWORKING
+# ============================================================
+networks:
+  shopforge_network:
+    driver: bridge
+    name: shopforge_network
+
+# ============================================================
+# SERVICES (The Apartments)
+# ============================================================
+services:
+
+  # ----------------------------------------------------------
+  # 🐍 Django — The main application server
+  # ----------------------------------------------------------
+  django: &django
+    container_name: shopforge_django
+    build:
+      context: ..
+      dockerfile: ./compose/local/django/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy    # Wait for Postgres health check
+      redis:
+        condition: service_started
+      mailhog:
+        condition: service_started
+    volumes:
+      - ../:/app:z                    # Mount entire project (z = SELinux label)
+    env_file:
+      - ../.env                       # Project-wide variables
+      - ./.envs/.local/.django        # Django-specific variables
+      - ./.envs/.local/.postgres      # DB connection variables
+    environment:
+      - PYTHONPATH=/app               # Python can import from /app
+    ports:
+      - "8000:8000"                   # Django dev server
+    command: /start
+    networks:
+      - default
+      - shopforge_network
+
+  # ----------------------------------------------------------
+  # ⚡ Celery Worker — Background task processor
+  # ----------------------------------------------------------
+  celeryworker:
+    <<: *django                        # Inherits EVERYTHING from django service
+    container_name: shopforge_celeryworker
+    ports: []                          # Workers don't expose ports
+    command: /start-celeryworker
+    depends_on:
+      - django                         # Wait for Django (migrations) first
+
+  # ----------------------------------------------------------
+  # ⏰ Celery Beat — Periodic task scheduler
+  # ----------------------------------------------------------
+  celerybeat:
+    <<: *django
+    container_name: shopforge_celerybeat
+    ports: []
+    command: /start-celerybeat
+    depends_on:
+      - django
+
+  # ----------------------------------------------------------
+  # 🐘 PostgreSQL — The database
+  # ----------------------------------------------------------
+  postgres:
+    build:
+      context: ..
+      dockerfile: ./compose/local/postgres/Dockerfile
+    image: shopforge_local_postgres
+    container_name: shopforge_postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:Z    # Persistent storage
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "5432:5432"                                 # Access from host (pgAdmin, etc.)
+    networks:
+      - default
+      - shopforge_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  # ----------------------------------------------------------
+  # 🔴 Redis — Cache + Message Broker
+  # ----------------------------------------------------------
+  redis:
+    image: redis:6-alpine
+    container_name: shopforge_redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+      - shopforge_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ----------------------------------------------------------
+  # 📬 MailHog — Email testing (catches all outbound email)
+  # ----------------------------------------------------------
+  mailhog:
+    image: mailhog/mailhog
+    container_name: shopforge_mailhog
+    ports:
+      - "8025:8025"                   # Web UI (view caught emails)
+      - "1025:1025"                   # SMTP port (Django sends here)
+    networks:
+      - default
+
+  # ----------------------------------------------------------
+  # 🎨 Vite — Frontend development server
+  # ----------------------------------------------------------
+  npm_build_ui:
+    <<: *django
+    container_name: shopforge_npm_build_ui
+    build:
+      context: ..
+      dockerfile: ./compose/local/vite/Dockerfile
+    ports:
+      - "${DJANGO_VITE_DEV_SERVER_PORT:-5174}:${DJANGO_VITE_DEV_SERVER_PORT:-5174}"
+    command: /npm-start.sh
+    depends_on: []                    # Frontend doesn't need backend to start
