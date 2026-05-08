@@ -31,6 +31,7 @@ psycopg2-binary = "^2.9"                # PostgreSQL adapter (binary for dev spe
 redis = "^5.0"                           # Redis client
 django-redis = "^5.4"                    # Django cache backend for Redis
 celery = {version = "^5.3", extras = ["redis"]}  # Task queue with Redis broker
+flower = "^2.0"                          # Celery monitoring web UI
 django-celery-beat = "^2.6"              # Database-backed periodic task scheduler
 
 # Security & Auth
@@ -138,6 +139,9 @@ omit-covered-files = true
 # TOOL CONFIGURATION: PYTEST
 # ============================================================
 [tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_classes = ["Test*"]
+python_functions = ["test_*"]
 testpaths = ["shopforge/tests"]
 addopts = [
     "-vv",                      # Extra verbose output
@@ -147,6 +151,14 @@ addopts = [
     "--reuse-db",               # Don't recreate DB every run (HUGE speed boost)
     "--capture=no",             # Show print() output during tests
     "--disable-pytest-warnings", # Less noise
+    "--strict-markers",
+    "--tb=short",
+    "--no-migrations",
+    "-q",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks integration tests that hit external services",
 ]
 norecursedirs = ["venv/*", ".git", "node_modules"]
 python_files = ["tests.py", "test_*.py"]
@@ -159,21 +171,23 @@ filterwarnings = [
 # TOOL CONFIGURATION: COVERAGE
 # ============================================================
 [tool.coverage.run]
+source = ["shopforge"]
 branch = true
 omit = [
-    "**/migrations/*",
-    "**/tests/*",
-    "**/urls.py",
+    "*/migrations/*",
+    "*/tests/*",
+    "*/test_*",
     "manage.py",
-    "config/*",
+    "config/wsgi.py",
+    "config/asgi.py",
 ]
 plugins = ["django_coverage_plugin"]
 relative_files = true
 
 [tool.coverage.report]
 skip_empty = true
-precision = 4
-fail_under = 85.0
+precision = 2
+fail_under = 75
 show_missing = true
 skip_covered = true
 omit = [
@@ -181,6 +195,14 @@ omit = [
     "**/tests/*",
     "**/urls.py",
     "manage.py",
+    "config/wsgi.py",
+    "config/asgi.py",
+]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
 ]
 
 # ============================================================

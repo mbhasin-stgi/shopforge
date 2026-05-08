@@ -34,6 +34,9 @@ CACHES = {
 # ============================================================
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
+for template in TEMPLATES:
+    template["OPTIONS"]["debug"] = False
+
 # ============================================================
 # CELERY (run tasks synchronously in tests)
 # ============================================================

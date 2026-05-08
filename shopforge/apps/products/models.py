@@ -13,7 +13,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.text import slugify
 
-from shopforge.apps.core.models import SoftDeleteModel, TimeStampedModel, UUIDModel
+from shopforge.apps.core.models import SoftDeleteManager, SoftDeleteModel, TimeStampedModel, UUIDModel
 
 
 class Category(TimeStampedModel):
@@ -57,7 +57,7 @@ class Category(TimeStampedModel):
         super().save(*args, **kwargs)
 
 
-class ProductManager(models.Manager):
+class ProductManager(SoftDeleteManager):
     """Custom manager for Product queryset operations."""
 
     def active(self):

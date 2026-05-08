@@ -220,17 +220,40 @@ SPECTACULAR_SETTINGS = {
 # ============================================================
 # CELERY CONFIGURATION
 # ============================================================
-CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://redis:6379/1")
-CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://redis:6379/2")
+CELERY_BROKER_URL = env("REDIS_URL", default="redis://redis:6379/0")
+CELERY_RESULT_BACKEND = env("REDIS_URL", default="redis://redis:6379/0")
+
+# Serialization: JSON is safer than pickle (no arbitrary code execution)
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
+
+# Timezone
 CELERY_TIMEZONE = TIME_ZONE
+CELERY_ENABLE_UTC = True
+
+# Task behavior
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes hard limit
-CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes soft limit (raises SoftTimeLimitExceeded)
-CELERY_WORKER_HIJACK_ROOT_LOGGER = False  # Don't mess with our logging config
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes soft limit (raises exception)
+CELERY_TASK_ACKS_LATE = True  # Acknowledge AFTER task completes (safer for retries)
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1  # Don't prefetch tasks (fairer distribution)
+
+# Retry policy
+CELERY_TASK_DEFAULT_RETRY_DELAY = 60  # Wait 60s before retrying
+CELERY_TASK_MAX_RETRIES = 3
+
+# Result expiration (don't keep results forever)
+CELERY_RESULT_EXPIRES = 60 * 60 * 24  # 24 hours
+
+# ─── Task Routing ────────────────────────────────────────────────────
+CELERY_TASK_ROUTES = {
+    "shopforge.apps.orders.tasks.send_order_confirmation_email": {"queue": "emails"},
+    "shopforge.apps.orders.tasks.send_daily_order_summary": {"queue": "emails"},
+    "shopforge.apps.inventory.tasks.*": {"queue": "inventory"},
+}
+CELERY_TASK_DEFAULT_QUEUE = "default"
+
 
 # ============================================================
 # REDIS / CACHING

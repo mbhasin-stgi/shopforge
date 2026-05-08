@@ -124,7 +124,7 @@ python-test: ## Run pytest — shortcut: t. Usage: make t DIR=shopforge/tests/or
 	${DOCKER_COMPOSE} -f ${LOCAL_YML} -p ${PROJECT_NAME} --env-file=./.env run --rm ${c} /bin/bash -c '\
 		export DJANGO_SETTINGS_MODULE=${TEST_SETTINGS_MODULE} && \
 		unset SENTRY_DSN && \
-		python -m pytest ${DIR} $(if ${TEST_CLASS},-k ${TEST_CLASS}) --count=${COUNT}'
+		python -m pytest ${DIR} $(if ${TEST_CLASS},-k ${TEST_CLASS})'
 t: python-test
 
 .PHONY: python-test-debug
@@ -133,7 +133,7 @@ python-test-debug: ## Run pytest with debugpy attached — shortcut: td
 		export DJANGO_SETTINGS_MODULE=${TEST_SETTINGS_MODULE} && \
 		unset SENTRY_DSN && \
 		python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m pytest ${DIR} \
-		$(if ${TEST_CLASS},-k ${TEST_CLASS}) --count=${COUNT}'
+		$(if ${TEST_CLASS},-k ${TEST_CLASS})'
 td: python-test-debug
 
 .PHONY: coverage

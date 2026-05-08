@@ -71,6 +71,15 @@ class OrderViewSet(viewsets.ModelViewSet):
         # Calculate totals
         order.calculate_totals()
 
+        # ─── Async tasks ────────────────────────────
+        # These run in the background AFTER the response is sent
+
+        from shopforge.apps.inventory.tasks import reserve_stock_for_order
+        from shopforge.apps.orders.tasks import send_order_confirmation_email
+
+        send_order_confirmation_email.delay(str(order.id))
+        reserve_stock_for_order.delay(str(order.id))
+
         # Return the created order
         output_serializer = OrderDetailSerializer(order, context={"request": request})
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
