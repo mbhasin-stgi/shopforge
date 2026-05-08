@@ -1,4 +1,5 @@
 """Order API views."""
+
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -8,11 +9,7 @@ from shopforge.apps.core.permissions import IsOwnerOrAdmin
 from shopforge.apps.orders.models import Order
 from shopforge.apps.products.models import Product
 
-from .serializers import (
-    OrderCreateSerializer,
-    OrderDetailSerializer,
-    OrderListSerializer,
-)
+from .serializers import OrderCreateSerializer, OrderDetailSerializer, OrderListSerializer
 
 
 class OrderViewSet(viewsets.ModelViewSet):

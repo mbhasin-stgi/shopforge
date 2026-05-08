@@ -4,6 +4,7 @@ WSGI config for ShopForge.
 It exposes the WSGI callable as a module-level variable named ``application``.
 Gunicorn uses this in production: gunicorn config.wsgi:application
 """
+
 import os
 
 from django.core.wsgi import get_wsgi_application

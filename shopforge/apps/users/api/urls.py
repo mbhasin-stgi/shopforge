@@ -1,4 +1,5 @@
 """URL configuration for the Users API."""
+
 from django.urls import path
 
 from .views import UserProfileView

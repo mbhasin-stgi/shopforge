@@ -5,8 +5,10 @@ These settings are shared across all environments (local, test, production).
 Environment-specific settings files import * from this module and override
 only what differs.
 """
-import environ
+
 from pathlib import Path
+
+import environ
 
 # ============================================================
 # PATH CONFIGURATION
@@ -75,8 +77,8 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # ============================================================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",       # Static files (before all others)
-    "corsheaders.middleware.CorsMiddleware",            # CORS (must be high up)
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Static files (before all others)
+    "corsheaders.middleware.CorsMiddleware",  # CORS (must be high up)
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

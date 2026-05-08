@@ -6,6 +6,7 @@ Hierarchy:
               ↓
          ProductVariant (size, color, etc.)
 """
+
 from decimal import Decimal
 
 from django.core.validators import MinValueValidator

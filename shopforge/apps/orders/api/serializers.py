@@ -1,4 +1,5 @@
 """Order serializers with nested line items."""
+
 from rest_framework import serializers
 
 from shopforge.apps.orders.models import Order, OrderItem
@@ -33,7 +34,7 @@ class OrderItemCreateSerializer(serializers.Serializer):
     def validate_product_id(self, value):
         """Ensure product exists and is active."""
         try:
-            product = Product.objects.active().get(id=value)
+            Product.objects.active().get(id=value)
         except Product.DoesNotExist:
             raise serializers.ValidationError("Product not found or not available.")
         return value

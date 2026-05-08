@@ -4,6 +4,7 @@ Core abstract models for ShopForge.
 These provide common fields and behaviors that most models need.
 Think of them as the "DNA" that all your models inherit.
 """
+
 import uuid
 
 from django.db import models

@@ -7,6 +7,9 @@ Optimized for speed:
 - Disabled throttling
 - Synchronous Celery tasks
 """
+
+import tempfile
+
 from .base import *  # noqa: F401, F403
 from .base import REST_FRAMEWORK
 
@@ -46,8 +49,6 @@ REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {}
 # ============================================================
 # MEDIA (use temp directory for test file uploads)
 # ============================================================
-import tempfile
-
 MEDIA_ROOT = tempfile.mkdtemp()
 
 # ============================================================

@@ -8,7 +8,9 @@ Corporate pattern: Views are THIN. They handle:
 
 They do NOT handle business logic. That belongs in services or model methods.
 """
+
 from django_filters.rest_framework import DjangoFilterBackend
+
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -17,11 +19,7 @@ from shopforge.apps.core.permissions import IsAdminOrReadOnly
 from shopforge.apps.products.models import Category, Product
 
 from .filters import ProductFilter
-from .serializers import (
-    CategorySerializer,
-    ProductDetailSerializer,
-    ProductListSerializer,
-)
+from .serializers import CategorySerializer, ProductDetailSerializer, ProductListSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):

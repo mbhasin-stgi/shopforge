@@ -4,6 +4,7 @@ Shared permission classes for the API.
 Corporate pattern: Define permissions at the platform level,
 not per-app. This ensures consistent access control.
 """
+
 from rest_framework.permissions import BasePermission
 
 

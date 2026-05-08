@@ -1,4 +1,5 @@
 """Custom managers for the User model."""
+
 from django.contrib.auth.models import UserManager as DjangoUserManager
 
 

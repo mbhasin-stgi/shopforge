@@ -1,4 +1,5 @@
 """User API views."""
+
 from rest_framework import generics, permissions, serializers
 
 from shopforge.apps.users.models import User

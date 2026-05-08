@@ -4,7 +4,9 @@ Product filters for the API.
 DjangoFilterBackend uses these classes to add ?field=value query parameters.
 Users can filter without us writing custom queryset logic in every view.
 """
+
 import django_filters
+
 from django.db import models
 
 from shopforge.apps.products.models import Product

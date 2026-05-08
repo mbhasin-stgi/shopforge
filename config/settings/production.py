@@ -4,8 +4,9 @@ Production settings for ShopForge.
 Security-hardened, performance-optimized, monitoring-enabled.
 All secrets come from environment variables — NOTHING is hardcoded.
 """
+
 from .base import *  # noqa: F401, F403
-from .base import MIDDLEWARE, env
+from .base import env
 
 # ============================================================
 # SECURITY

@@ -7,6 +7,9 @@ Local development settings for ShopForge.
 - Relaxed security
 - Vite dev server integration
 """
+
+import socket
+
 from .base import *  # noqa: F401, F403
 from .base import INSTALLED_APPS, MIDDLEWARE, env
 
@@ -39,8 +42,6 @@ MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 
 # Docker-compatible internal IPs detection
-import socket
-
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
 

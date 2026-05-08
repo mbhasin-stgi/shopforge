@@ -1,4 +1,5 @@
 """URL configuration for the Products API."""
+
 from rest_framework.routers import DefaultRouter
 
 from .views import CategoryViewSet, ProductViewSet

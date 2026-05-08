@@ -5,6 +5,7 @@ Serializers do TWO jobs:
 1. Validation — ensure incoming data is valid before it hits the database
 2. Transformation — control what data goes out (hide internal fields, add computed fields)
 """
+
 from rest_framework import serializers
 
 from shopforge.apps.products.models import Category, Product, ProductImage

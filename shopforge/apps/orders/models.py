@@ -4,6 +4,7 @@ Order models — the heart of e-commerce.
 An Order is a snapshot of what the customer bought, at what price, at what time.
 Even if product prices change later, the order preserves the historical price.
 """
+
 from decimal import Decimal
 
 from django.conf import settings
@@ -52,9 +53,7 @@ class Order(UUIDModel, TimeStampedModel):
 
     # Order state
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
-    payment_status = models.CharField(
-        max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.PENDING
-    )
+    payment_status = models.CharField(max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
 
     # Pricing (calculated at order time, never recalculated)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))

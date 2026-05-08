@@ -1,4 +1,5 @@
 """Inventory API views (admin only)."""
+
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import IsAdminUser
 

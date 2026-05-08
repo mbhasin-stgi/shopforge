@@ -1,4 +1,5 @@
 """Admin configuration for User model."""
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
@@ -22,6 +23,4 @@ class UserAdmin(DjangoUserAdmin):
         ("Dates", {"fields": ("last_login", "date_joined")}),
     )
 
-    add_fieldsets = (
-        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "role")}),
-    )
+    add_fieldsets = ((None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "role")}),)

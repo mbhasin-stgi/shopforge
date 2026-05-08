@@ -5,6 +5,7 @@ Tracks stock levels and every movement (in/out) for audit purposes.
 Think of it like a bank account: StockRecord is your balance,
 StockMovement is your transaction history.
 """
+
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -109,4 +110,6 @@ class StockMovement(TimeStampedModel):
     def __str__(self):
         """Return movement description."""
         direction = "+" if self.quantity_change > 0 else ""
-        return f"{self.get_movement_type_display()}: {direction}{self.quantity_change} ({self.stock_record.product.name})"
+        return (
+            f"{self.get_movement_type_display()}: {direction}{self.quantity_change} ({self.stock_record.product.name})"
+        )

@@ -1,6 +1,8 @@
 """API URL Configuration for ShopForge."""
-from django.urls import include, path
+
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+
+from django.urls import include, path
 
 app_name = "api"
 
