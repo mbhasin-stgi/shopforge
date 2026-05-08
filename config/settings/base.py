@@ -47,6 +47,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework.authtoken",
     "django_filters",
     "corsheaders",
     "django_extensions",
@@ -55,6 +56,8 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
 ]
 
 LOCAL_APPS = [

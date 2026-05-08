@@ -36,7 +36,7 @@ django-celery-beat = "^2.6"              # Database-backed periodic task schedul
 # Security & Auth
 django-allauth = "^0.61"                # Authentication (social, email, etc.)
 djangorestframework-simplejwt = "^5.3"  # JWT tokens for API auth
-
+dj-rest-auth = "^6.0"                   # REST endpoints for auth (login, logout, register)
 # Utilities
 Pillow = "^10.2"                         # Image processing
 django-storages = "^1.14"               # Cloud storage backends (S3, GCS, etc.)
