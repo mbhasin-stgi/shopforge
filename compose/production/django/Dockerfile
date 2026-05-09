@@ -48,7 +48,7 @@ RUN npm ci --production=false
 
 # Copy frontend source and all config files needed by vite/ts/tailwind
 COPY shopforge/webapp/ shopforge/webapp/
-COPY vite.config.ts tsconfig*.json tailwind.config.ts postcss.config.js ./
+COPY vite.config.ts tsconfig*.json tailwind.config.ts postcss.config.js env.d.ts ./
 
 # Produce the compiled static assets in shopforge/webapp/dist/
 RUN npm run build
@@ -59,6 +59,10 @@ RUN npm run build
 # ══════════════════════════════════════════════════════════════════════
 # Slim Python image with no gcc, no pip, no Node — just our app + deps.
 FROM python:3.11-slim-bookworm AS runtime
+
+# Redeclare ARGs in this stage — Docker ARG scope is per-stage
+ARG BUILD_DATE
+ARG VCS_REF
 
 # OCI-standard labels for image traceability
 LABEL org.opencontainers.image.created="${BUILD_DATE}"
