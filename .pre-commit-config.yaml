@@ -48,12 +48,11 @@ repos:
 
   # ─── Python Docstring Coverage (interrogate) ────────────────────────
   - repo: https://github.com/econchick/interrogate
-    rev: 1.5.0
+    rev: 1.7.0
     hooks:
       - id: interrogate
         args: ["-c", "pyproject.toml"]
         pass_filenames: false
-        additional_dependencies: ["setuptools"]
 
   # ─── Security: Detect Secrets ───────────────────────────────────────
   - repo: https://github.com/Yelp/detect-secrets
