@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 
-import { api } from "@/services/api";
 import OrderStatusBadge from "@/components/OrderStatusBadge.vue";
+import { api } from "@/services/api";
 
 interface Order {
   id: string;
@@ -45,19 +45,27 @@ onMounted(fetchOrders);
 
 <template>
   <v-container class="py-8" style="max-width: 900px">
-
     <!-- Page header -->
     <div class="mb-6">
-      <h1 class="text-h4 font-weight-bold mb-1" style="color: #1E293B; letter-spacing: -0.5px">
+      <h1
+        class="text-h4 font-weight-bold mb-1"
+        style="color: #1e293b; letter-spacing: -0.5px"
+      >
         My Orders
       </h1>
-      <p class="text-body-1" style="color: #64748B">
+      <p class="text-body-1" style="color: #64748b">
         Track and manage your purchase history
       </p>
     </div>
 
     <!-- Error -->
-    <v-alert v-if="error" type="error" variant="tonal" rounded="xl" class="mb-4">
+    <v-alert
+      v-if="error"
+      type="error"
+      variant="tonal"
+      rounded="xl"
+      class="mb-4"
+    >
       Failed to load orders.
       <template #append>
         <v-btn variant="text" @click="fetchOrders">Retry</v-btn>
@@ -79,22 +87,33 @@ onMounted(fetchOrders);
             <!-- Left: order info -->
             <div>
               <div class="d-flex align-center gap-2 mb-1">
-                <span class="text-body-1 font-weight-bold" style="color: #1E293B">
+                <span
+                  class="text-body-1 font-weight-bold"
+                  style="color: #1e293b"
+                >
                   {{ order.order_number }}
                 </span>
                 <OrderStatusBadge :status="order.status" />
               </div>
-              <p class="text-body-2" style="color: #64748B">
+              <p class="text-body-2" style="color: #64748b">
                 Placed on {{ formatDate(order.created_at) }}
               </p>
             </div>
 
             <!-- Right: total -->
             <div class="text-right">
-              <p class="text-h6 font-weight-bold" style="color: #1565C0">${{ order.total }}</p>
-              <p class="text-caption" style="color: #94A3B8">
+              <p class="text-h6 font-weight-bold" style="color: #1565c0">
+                ${{ order.total }}
+              </p>
+              <p class="text-caption" style="color: #94a3b8">
                 Payment:
-                <span :class="order.payment_status === 'PAID' ? 'text-success' : 'text-warning'">
+                <span
+                  :class="
+                    order.payment_status === 'PAID'
+                      ? 'text-success'
+                      : 'text-warning'
+                  "
+                >
                   {{ order.payment_status }}
                 </span>
               </p>
@@ -112,12 +131,21 @@ onMounted(fetchOrders);
       border
       class="pa-12 text-center"
     >
-      <v-icon size="64" color="grey-300" class="mb-4">fa:fas fa-box-open</v-icon>
-      <h3 class="text-h6 font-weight-medium mb-2" style="color: #475569">No orders yet</h3>
-      <p class="text-body-2 mb-6" style="color: #94A3B8">
+      <v-icon size="64" color="grey-300" class="mb-4"
+        >fa:fas fa-box-open</v-icon
+      >
+      <h3 class="text-h6 font-weight-medium mb-2" style="color: #475569">
+        No orders yet
+      </h3>
+      <p class="text-body-2 mb-6" style="color: #94a3b8">
         Your orders will appear here once you make a purchase.
       </p>
-      <v-btn color="primary" variant="flat" rounded="xl" :to="{ name: 'products' }">
+      <v-btn
+        color="primary"
+        variant="flat"
+        rounded="xl"
+        :to="{ name: 'products' }"
+      >
         Start Shopping
       </v-btn>
     </v-card>
@@ -131,7 +159,5 @@ onMounted(fetchOrders);
         </v-card-text>
       </v-card>
     </div>
-
   </v-container>
 </template>
-

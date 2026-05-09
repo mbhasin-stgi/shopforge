@@ -9,8 +9,8 @@ import axios from "axios";
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
-  withCredentials: true,          // Send cookies (including csrftoken) with every request
-  xsrfCookieName: "csrftoken",   // Django sets this cookie on first response
+  withCredentials: true, // Send cookies (including csrftoken) with every request
+  xsrfCookieName: "csrftoken", // Django sets this cookie on first response
   xsrfHeaderName: "X-CSRFToken", // Django's CSRF middleware reads this header
   headers: {
     "Content-Type": "application/json",

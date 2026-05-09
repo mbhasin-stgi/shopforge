@@ -66,5 +66,13 @@ export const useCartStore = defineStore("cart", () => {
     localStorage.setItem("cart_items", JSON.stringify(items.value));
   }
 
-  return { items, itemCount, total, addItem, removeItem, updateQuantity, clearCart };
+  return {
+    items,
+    itemCount,
+    total,
+    addItem,
+    removeItem,
+    updateQuantity,
+    clearCart,
+  };
 });

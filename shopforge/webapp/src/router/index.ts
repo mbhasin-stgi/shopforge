@@ -7,11 +7,11 @@
  */
 import { createRouter, createWebHistory } from "vue-router";
 
+import CartView from "@/views/CartView.vue";
 // Eager imports — zero delay on first navigation for core pages
 import HomeView from "@/views/HomeView.vue";
 import LoginView from "@/views/LoginView.vue";
 import ProductListView from "@/views/ProductListView.vue";
-import CartView from "@/views/CartView.vue";
 
 export const router = createRouter({
   history: createWebHistory(),

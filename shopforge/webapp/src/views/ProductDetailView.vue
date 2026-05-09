@@ -2,9 +2,9 @@
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+import { useNotification } from "@/composables/useNotification";
 import { api } from "@/services/api";
 import { useCartStore } from "@/stores/cart";
-import { useNotification } from "@/composables/useNotification";
 
 interface ProductImage {
   id: number;
@@ -48,8 +48,11 @@ async function fetchProduct() {
     const slug = props.slug || (route.params.slug as string);
     const response = await api.get(`/products/${slug}/`);
     product.value = response.data;
-    const primary = response.data.images?.find((i: ProductImage) => i.is_primary);
-    selectedImage.value = primary?.image ?? response.data.images?.[0]?.image ?? null;
+    const primary = response.data.images?.find(
+      (i: ProductImage) => i.is_primary,
+    );
+    selectedImage.value =
+      primary?.image ?? response.data.images?.[0]?.image ?? null;
   } catch {
     router.push({ name: "products" });
   } finally {
@@ -77,7 +80,6 @@ onMounted(fetchProduct);
 
 <template>
   <v-container class="py-8" style="max-width: 1200px">
-
     <!-- Loading state -->
     <v-row v-if="loading">
       <v-col cols="12" md="6">
@@ -95,7 +97,13 @@ onMounted(fetchProduct);
       <!-- Image column -->
       <v-col cols="12" md="6">
         <!-- Main image -->
-        <v-card rounded="xl" elevation="0" border class="mb-3 overflow-hidden" style="background: #F8FAFC">
+        <v-card
+          rounded="xl"
+          elevation="0"
+          border
+          class="mb-3 overflow-hidden"
+          style="background: #f8fafc"
+        >
           <v-img
             :src="selectedImage ?? ''"
             :alt="product.name"
@@ -121,8 +129,20 @@ onMounted(fetchProduct);
           <div
             v-for="img in product.images"
             :key="img.id"
-            style="width: 72px; height: 72px; cursor: pointer; border-radius: 10px; overflow: hidden; border: 2px solid transparent; transition: border-color 0.15s"
-            :style="selectedImage === img.image ? { borderColor: '#1565C0' } : { borderColor: '#E2E8F0' }"
+            style="
+              width: 72px;
+              height: 72px;
+              cursor: pointer;
+              border-radius: 10px;
+              overflow: hidden;
+              border: 2px solid transparent;
+              transition: border-color 0.15s;
+            "
+            :style="
+              selectedImage === img.image
+                ? { borderColor: '#1565C0' }
+                : { borderColor: '#E2E8F0' }
+            "
             @click="selectedImage = img.image"
           >
             <v-img :src="img.image" cover height="72" />
@@ -144,28 +164,44 @@ onMounted(fetchProduct);
 
         <!-- Title & badges -->
         <div class="d-flex align-start justify-space-between mb-2">
-          <h1 class="text-h4 font-weight-bold" style="color: #1E293B; letter-spacing: -0.5px; line-height: 1.2">
+          <h1
+            class="text-h4 font-weight-bold"
+            style="color: #1e293b; letter-spacing: -0.5px; line-height: 1.2"
+          >
             {{ product.name }}
           </h1>
         </div>
 
-        <p class="text-caption mb-4" style="color: #94A3B8">SKU: {{ product.sku }}</p>
+        <p class="text-caption mb-4" style="color: #94a3b8">
+          SKU: {{ product.sku }}
+        </p>
 
-        <p v-if="product.short_description" class="text-body-1 mb-4" style="color: #475569; line-height: 1.7">
+        <p
+          v-if="product.short_description"
+          class="text-body-1 mb-4"
+          style="color: #475569; line-height: 1.7"
+        >
           {{ product.short_description }}
         </p>
 
         <!-- Price -->
         <div class="d-flex align-center gap-3 mb-4">
-          <span class="text-h3 font-weight-black" style="color: #1565C0">${{ product.price }}</span>
+          <span class="text-h3 font-weight-black" style="color: #1565c0"
+            >${{ product.price }}</span
+          >
           <span
             v-if="product.is_on_sale && product.compare_at_price"
             class="text-h6 text-decoration-line-through"
-            style="color: #94A3B8"
+            style="color: #94a3b8"
           >
             ${{ product.compare_at_price }}
           </span>
-          <v-chip v-if="product.is_on_sale" color="error" size="small" class="font-weight-bold">
+          <v-chip
+            v-if="product.is_on_sale"
+            color="error"
+            size="small"
+            class="font-weight-bold"
+          >
             SAVE {{ product.discount_percentage }}%
           </v-chip>
         </div>
@@ -175,7 +211,11 @@ onMounted(fetchProduct);
           <v-chip
             :color="product.in_stock ? 'success' : 'error'"
             variant="tonal"
-            :prepend-icon="product.in_stock ? 'fa:fas fa-circle-check' : 'fa:fas fa-circle-xmark'"
+            :prepend-icon="
+              product.in_stock
+                ? 'fa:fas fa-circle-check'
+                : 'fa:fas fa-circle-xmark'
+            "
             size="small"
           >
             {{ product.in_stock ? "In Stock" : "Out of Stock" }}
@@ -195,7 +235,10 @@ onMounted(fetchProduct);
               >
                 <v-icon size="18">fa:fas fa-minus</v-icon>
               </v-btn>
-              <span class="px-4 text-body-1 font-weight-medium" style="min-width: 40px; text-align: center">
+              <span
+                class="px-4 text-body-1 font-weight-medium"
+                style="min-width: 40px; text-align: center"
+              >
                 {{ quantity }}
               </span>
               <v-btn
@@ -225,13 +268,16 @@ onMounted(fetchProduct);
 
         <!-- Description -->
         <v-divider class="mb-4" />
-        <h3 class="text-body-1 font-weight-bold mb-3" style="color: #1E293B">Description</h3>
-        <p class="text-body-2" style="color: #475569; line-height: 1.8; white-space: pre-line">
+        <h3 class="text-body-1 font-weight-bold mb-3" style="color: #1e293b">
+          Description
+        </h3>
+        <p
+          class="text-body-2"
+          style="color: #475569; line-height: 1.8; white-space: pre-line"
+        >
           {{ product.description }}
         </p>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
-

@@ -28,7 +28,8 @@ export const useAuthStore = defineStore("auth", () => {
   const isAdmin = computed(() => user.value?.role === "ADMIN");
   const fullName = computed(() =>
     user.value
-      ? `${user.value.first_name} ${user.value.last_name}`.trim() || user.value.email
+      ? `${user.value.first_name} ${user.value.last_name}`.trim() ||
+        user.value.email
       : "",
   );
 
@@ -60,5 +61,14 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = response.data;
   }
 
-  return { user, token, isAuthenticated, isAdmin, fullName, login, logout, fetchProfile };
+  return {
+    user,
+    token,
+    isAuthenticated,
+    isAdmin,
+    fullName,
+    login,
+    logout,
+    fetchProfile,
+  };
 });

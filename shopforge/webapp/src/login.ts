@@ -4,13 +4,13 @@
  * Separate bundle from main.ts so the login page loads independently
  * without pulling in the full app (router, pinia, etc.).
  */
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-
-import LoginView from "./views/LoginView.vue";
-import { vuetify } from "./plugins/vuetify";
-
 import "./assets/styles/main.css";
+
+import { createPinia } from "pinia";
+import { createApp } from "vue";
+
+import { vuetify } from "./plugins/vuetify";
+import LoginView from "./views/LoginView.vue";
 
 const app = createApp(LoginView);
 

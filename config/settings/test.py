@@ -11,7 +11,7 @@ Optimized for speed:
 import tempfile
 
 from .base import *  # noqa: F401, F403
-from .base import REST_FRAMEWORK
+from .base import REST_FRAMEWORK, env
 
 # ============================================================
 # PASSWORD HASHING (fast for tests, insecure for production)
@@ -74,7 +74,7 @@ LOGGING = {
 # ============================================================
 # SECURITY (relaxed for tests)
 # ============================================================
-SECRET_KEY = "test-secret-key-not-for-production"
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="test-key")
 
 # ============================================================
 # MISC

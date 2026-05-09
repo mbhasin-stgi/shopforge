@@ -4,15 +4,15 @@
  * This file bootstraps the Vue app with all plugins:
  * router, state management, component library, etc.
  */
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-
-import App from "./App.vue";
-import { router } from "./router";
-import { vuetify } from "./plugins/vuetify";
-
 // Global styles
 import "./assets/styles/main.css";
+
+import { createPinia } from "pinia";
+import { createApp } from "vue";
+
+import App from "./App.vue";
+import { vuetify } from "./plugins/vuetify";
+import { router } from "./router";
 
 const app = createApp(App);
 

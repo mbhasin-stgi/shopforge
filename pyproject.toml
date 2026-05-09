@@ -92,6 +92,7 @@ django-vite = "^3.0"
 # ============================================================
 # TOOL CONFIGURATION: BLACK (Code Formatter)
 # ============================================================
+detect-secrets = "^1.5.0"
 [tool.black]
 line-length = 120
 target-version = ["py311"]
@@ -254,3 +255,10 @@ exclude = ["migrations/"]
 min_confidence = 70
 paths = ["shopforge"]
 sort_by_size = true
+
+# ============================================================
+# TOOL CONFIGURATION: BANDIT (Security Linter)
+# ============================================================
+[tool.bandit]
+exclude_dirs = ["tests", "shopforge/apps/*/tests"]
+skips = ["B101"]  # Skip assert warnings (used legitimately in tests

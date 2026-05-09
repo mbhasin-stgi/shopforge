@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 
-import { api } from "@/services/api";
-import ProductCard from "@/components/ProductCard.vue";
 import type { Product } from "@/components/ProductCard.vue";
+import ProductCard from "@/components/ProductCard.vue";
+import { api } from "@/services/api";
 
 const products = ref<Product[]>([]);
 const loading = ref(true);
@@ -35,14 +35,20 @@ onMounted(fetchProducts);
 
 <template>
   <v-container class="py-8" style="max-width: 1400px">
-
     <!-- Page header -->
     <div class="mb-6">
-      <h1 class="text-h4 font-weight-bold mb-1" style="color: #1E293B; letter-spacing: -0.5px">
+      <h1
+        class="text-h4 font-weight-bold mb-1"
+        style="color: #1e293b; letter-spacing: -0.5px"
+      >
         Products
       </h1>
-      <p class="text-body-1" style="color: #64748B">
-        {{ loading ? "Loading…" : `${products.length} item${products.length !== 1 ? "s" : ""}` }}
+      <p class="text-body-1" style="color: #64748b">
+        {{
+          loading
+            ? "Loading…"
+            : `${products.length} item${products.length !== 1 ? "s" : ""}`
+        }}
       </p>
     </div>
 
@@ -95,12 +101,24 @@ onMounted(fetchProducts);
       v-else-if="!loading && !products.length && !error"
       class="d-flex flex-column align-center justify-center py-16"
     >
-      <v-icon size="64" color="grey-300" class="mb-4">fa:fas fa-box-open</v-icon>
-      <h3 class="text-h6 font-weight-medium mb-2" style="color: #475569">No products found</h3>
-      <p class="text-body-2" style="color: #94A3B8">
-        {{ search ? `No results for "${search}"` : "No products available yet." }}
+      <v-icon size="64" color="grey-300" class="mb-4"
+        >fa:fas fa-box-open</v-icon
+      >
+      <h3 class="text-h6 font-weight-medium mb-2" style="color: #475569">
+        No products found
+      </h3>
+      <p class="text-body-2" style="color: #94a3b8">
+        {{
+          search ? `No results for "${search}"` : "No products available yet."
+        }}
       </p>
-      <v-btn v-if="search" variant="tonal" color="primary" class="mt-4" @click="onClear">
+      <v-btn
+        v-if="search"
+        variant="tonal"
+        color="primary"
+        class="mt-4"
+        @click="onClear"
+      >
         Clear search
       </v-btn>
     </div>
@@ -117,8 +135,5 @@ onMounted(fetchProducts);
         </v-card>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
-
-

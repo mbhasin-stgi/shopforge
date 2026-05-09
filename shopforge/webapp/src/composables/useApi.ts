@@ -5,8 +5,8 @@
  *   const { data, loading, error, fetch } = useApi<Product[]>("/products/");
  *   onMounted(fetch);
  */
-import { ref } from "vue";
 import type { AxiosRequestConfig } from "axios";
+import { ref } from "vue";
 
 import { api } from "@/services/api";
 

@@ -148,18 +148,20 @@ coverage: ## Run tests with coverage report
 # ============================================================
 # CODE QUALITY
 # ============================================================
-.PHONY: lint
-lint: ## Run all linters (black check + isort check + flake8)
-	${DOCKER_COMPOSE} -f ${LOCAL_YML} -p ${PROJECT_NAME} --env-file=./.env run --rm ${c} /bin/bash -c '\
-		echo "🖤 Running Black (check mode)..." && black --check . && \
-		echo "📦 Running isort (check mode)..." && isort --check-only . && \
-		echo "🔍 Running Flake8..." && flake8 .'
+.PHONY: lint format qc pylint
 
-.PHONY: format
-format: ## Auto-format code (black + isort)
+lint: ## Run all pre-commit hooks on all files (no auto-fix)
+	pre-commit run --all-files
+
+format: ## Auto-format Python (black + isort) and frontend (prettier)
 	${DOCKER_COMPOSE} -f ${LOCAL_YML} -p ${PROJECT_NAME} --env-file=./.env run --rm ${c} /bin/bash -c '\
 		echo "🖤 Running Black..." && black . && \
 		echo "📦 Running isort..." && isort .'
+	npx prettier --write "shopforge/webapp/src/**/*.{vue,ts,js,css,scss}"
+
+qc: lint ## Full quality check: pre-commit + mypy + vue-tsc
+	${DOCKER_COMPOSE} -f ${LOCAL_YML} -p ${PROJECT_NAME} --env-file=./.env run --rm ${c} mypy .
+	npx vue-tsc --build --force
 
 .PHONY: pylint
 pylint: ## Run Pylint
@@ -216,4 +218,4 @@ serve-docs: ## Serve docs locally on port 8002
 .PHONY: schema
 schema: ## Generate OpenAPI schema
 	${DOCKER_COMPOSE} -f ${LOCAL_YML} -p ${PROJECT_NAME} --env-file=./.env run --rm ${c} \
-		python manage.py spectacular --color --file schema.json
+		python manage.py spectacular --color --file schema.yaml

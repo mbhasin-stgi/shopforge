@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 
-import { api } from "@/services/api";
-import ProductCard from "@/components/ProductCard.vue";
 import type { Product } from "@/components/ProductCard.vue";
+import ProductCard from "@/components/ProductCard.vue";
+import { api } from "@/services/api";
 
 const featured = ref<Product[]>([]);
 const loading = ref(true);
@@ -28,25 +28,47 @@ onMounted(fetchFeatured);
   <div>
     <!-- Hero -->
     <div
-      style="background: linear-gradient(135deg, #1565C0 0%, #0D47A1 60%, #01579B 100%); padding: 80px 24px"
+      style="
+        background: linear-gradient(
+          135deg,
+          #1565c0 0%,
+          #0d47a1 60%,
+          #01579b 100%
+        );
+        padding: 80px 24px;
+      "
     >
       <v-container style="max-width: 1200px">
         <v-row align="center">
           <v-col cols="12" md="7">
             <p
               class="text-overline font-weight-bold mb-3"
-              style="color: rgba(255,255,255,0.7); letter-spacing: 2px"
+              style="color: rgba(255, 255, 255, 0.7); letter-spacing: 2px"
             >
               Corporate E-Commerce Platform
             </p>
             <h1
               class="font-weight-black mb-4"
-              style="color: white; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.15; letter-spacing: -1px"
+              style="
+                color: white;
+                font-size: clamp(2rem, 4vw, 3.25rem);
+                line-height: 1.15;
+                letter-spacing: -1px;
+              "
             >
               The smarter way to<br />run your store
             </h1>
-            <p class="text-h6 mb-8" style="color: rgba(255,255,255,0.8); font-weight: 400; max-width: 520px; line-height: 1.6">
-              Discover quality products, manage orders, and grow your business — all in one place.
+            <p
+              class="text-h6 mb-8"
+              style="
+                color: rgba(255, 255, 255, 0.8);
+                font-weight: 400;
+                max-width: 520px;
+                line-height: 1.6;
+              "
+            >
+              Discover quality products, manage orders, and grow your business —
+              all in one place.
             </p>
             <div class="d-flex gap-3 flex-wrap">
               <v-btn
@@ -55,7 +77,12 @@ onMounted(fetchFeatured);
                 variant="flat"
                 size="large"
                 rounded="xl"
-                style="color: #1565C0; font-weight: 700; height: 52px; padding: 0 32px"
+                style="
+                  color: #1565c0;
+                  font-weight: 700;
+                  height: 52px;
+                  padding: 0 32px;
+                "
               >
                 Shop Now
               </v-btn>
@@ -64,21 +91,28 @@ onMounted(fetchFeatured);
                 variant="outlined"
                 size="large"
                 rounded="xl"
-                style="color: white; border-color: rgba(255,255,255,0.5); height: 52px; padding: 0 32px"
+                style="
+                  color: white;
+                  border-color: rgba(255, 255, 255, 0.5);
+                  height: 52px;
+                  padding: 0 32px;
+                "
               >
                 Browse Catalog
               </v-btn>
             </div>
           </v-col>
           <v-col cols="12" md="5" class="d-none d-md-flex justify-center">
-            <v-icon size="200" style="color: rgba(255,255,255,0.1)">fa:fas fa-store</v-icon>
+            <v-icon size="200" style="color: rgba(255, 255, 255, 0.1)"
+              >fa:fas fa-store</v-icon
+            >
           </v-col>
         </v-row>
       </v-container>
     </div>
 
     <!-- Stats bar -->
-    <div style="background: white; border-bottom: 1px solid #E2E8F0">
+    <div style="background: white; border-bottom: 1px solid #e2e8f0">
       <v-container style="max-width: 1200px">
         <v-row class="py-6">
           <v-col
@@ -88,20 +122,26 @@ onMounted(fetchFeatured);
             sm="3"
             class="text-center"
           >
-            <p class="text-h5 font-weight-black mb-1" style="color: #1565C0">{{ stat.value }}</p>
-            <p class="text-body-2" style="color: #64748B">{{ stat.label }}</p>
+            <p class="text-h5 font-weight-black mb-1" style="color: #1565c0">
+              {{ stat.value }}
+            </p>
+            <p class="text-body-2" style="color: #64748b">{{ stat.label }}</p>
           </v-col>
         </v-row>
       </v-container>
     </div>
 
     <!-- Featured products -->
-    <div style="background: #F8FAFC; padding: 64px 24px">
+    <div style="background: #f8fafc; padding: 64px 24px">
       <v-container style="max-width: 1400px">
         <div class="d-flex align-center justify-space-between mb-6">
           <div>
-            <h2 class="text-h5 font-weight-bold mb-1" style="color: #1E293B">Featured Products</h2>
-            <p class="text-body-2" style="color: #64748B">Hand-picked selections just for you</p>
+            <h2 class="text-h5 font-weight-bold mb-1" style="color: #1e293b">
+              Featured Products
+            </h2>
+            <p class="text-body-2" style="color: #64748b">
+              Hand-picked selections just for you
+            </p>
           </div>
           <v-btn
             :to="{ name: 'products' }"
@@ -132,9 +172,19 @@ onMounted(fetchFeatured);
           v-else-if="!loading && !featured.length"
           class="d-flex flex-column align-center py-12"
         >
-          <v-icon size="48" color="grey-300" class="mb-3">fa:far fa-star</v-icon>
-          <p class="text-body-1" style="color: #94A3B8">No featured products yet.</p>
-          <v-btn :to="{ name: 'products' }" color="primary" variant="tonal" class="mt-4" rounded="xl">
+          <v-icon size="48" color="grey-300" class="mb-3"
+            >fa:far fa-star</v-icon
+          >
+          <p class="text-body-1" style="color: #94a3b8">
+            No featured products yet.
+          </p>
+          <v-btn
+            :to="{ name: 'products' }"
+            color="primary"
+            variant="tonal"
+            class="mt-4"
+            rounded="xl"
+          >
             Browse all products
           </v-btn>
         </div>
@@ -157,25 +207,44 @@ onMounted(fetchFeatured);
     <!-- Value propositions -->
     <div style="background: white; padding: 64px 24px">
       <v-container style="max-width: 1200px">
-        <h2 class="text-h5 font-weight-bold text-center mb-2" style="color: #1E293B">
+        <h2
+          class="text-h5 font-weight-bold text-center mb-2"
+          style="color: #1e293b"
+        >
           Why ShopForge?
         </h2>
-        <p class="text-body-1 text-center mb-10" style="color: #64748B">
+        <p class="text-body-1 text-center mb-10" style="color: #64748b">
           Built for modern commerce at enterprise scale
         </p>
         <v-row>
-          <v-col v-for="feature in features" :key="feature.title" cols="12" sm="6" md="3">
+          <v-col
+            v-for="feature in features"
+            :key="feature.title"
+            cols="12"
+            sm="6"
+            md="3"
+          >
             <div class="text-center pa-4">
               <div
                 class="mx-auto mb-4 d-flex align-center justify-center"
-                style="width: 56px; height: 56px; background: #EFF6FF; border-radius: 16px"
+                style="
+                  width: 56px;
+                  height: 56px;
+                  background: #eff6ff;
+                  border-radius: 16px;
+                "
               >
                 <v-icon :icon="feature.icon" color="primary" size="26" />
               </div>
-              <h3 class="text-body-1 font-weight-bold mb-2" style="color: #1E293B">
+              <h3
+                class="text-body-1 font-weight-bold mb-2"
+                style="color: #1e293b"
+              >
                 {{ feature.title }}
               </h3>
-              <p class="text-body-2" style="color: #64748B; line-height: 1.6">{{ feature.desc }}</p>
+              <p class="text-body-2" style="color: #64748b; line-height: 1.6">
+                {{ feature.desc }}
+              </p>
             </div>
           </v-col>
         </v-row>
@@ -193,10 +262,25 @@ const stats = [
 ];
 
 const features = [
-  { icon: "fa:fas fa-shield-halved", title: "Enterprise Security", desc: "SOC2 compliant with end-to-end encryption on all transactions." },
-  { icon: "fa:fas fa-chart-line", title: "Real-time Analytics", desc: "Live dashboards and reporting to track every sale and trend." },
-  { icon: "fa:fas fa-boxes-stacked", title: "Smart Inventory", desc: "Automated reorder alerts and multi-warehouse stock tracking." },
-  { icon: "fa:fas fa-bolt", title: "Blazing Fast", desc: "Sub-50ms API responses powered by Redis caching and CDN." },
+  {
+    icon: "fa:fas fa-shield-halved",
+    title: "Enterprise Security",
+    desc: "SOC2 compliant with end-to-end encryption on all transactions.",
+  },
+  {
+    icon: "fa:fas fa-chart-line",
+    title: "Real-time Analytics",
+    desc: "Live dashboards and reporting to track every sale and trend.",
+  },
+  {
+    icon: "fa:fas fa-boxes-stacked",
+    title: "Smart Inventory",
+    desc: "Automated reorder alerts and multi-warehouse stock tracking.",
+  },
+  {
+    icon: "fa:fas fa-bolt",
+    title: "Blazing Fast",
+    desc: "Sub-50ms API responses powered by Redis caching and CDN.",
+  },
 ];
 </script>
-

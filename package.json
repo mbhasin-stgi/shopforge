@@ -15,7 +15,7 @@
     "lint": "eslint ./shopforge/webapp/src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
     "lint-fix": "eslint ./shopforge/webapp/src --fix --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
     "format": "prettier --write \"shopforge/webapp/src/**/*.{vue,ts,js,css,scss}\"",
-    "gen-types": "openapi-typescript schema.json -o shopforge/webapp/src/types/schema.d.ts"
+    "gen-types": "openapi-typescript schema.yaml -o shopforge/webapp/src/types/schema.d.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",

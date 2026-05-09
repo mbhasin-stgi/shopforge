@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 
+import { useNotification } from "@/composables/useNotification";
 import { useAuthStore } from "@/stores/auth";
 import { useCartStore } from "@/stores/cart";
-import { useNotification } from "@/composables/useNotification";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -27,7 +27,10 @@ async function handleLogout() {
         style="color: inherit"
       >
         <v-icon color="primary" size="28">fa:fas fa-store</v-icon>
-        <span class="text-h6 font-weight-bold" style="color: #1565C0; letter-spacing: -0.3px">
+        <span
+          class="text-h6 font-weight-bold"
+          style="color: #1565c0; letter-spacing: -0.3px"
+        >
           ShopForge
         </span>
       </RouterLink>
@@ -48,7 +51,13 @@ async function handleLogout() {
       <v-divider vertical class="mx-2 my-3" />
 
       <!-- Cart icon -->
-      <v-btn icon variant="text" rounded="lg" class="mr-1" :to="{ name: 'cart' }">
+      <v-btn
+        icon
+        variant="text"
+        rounded="lg"
+        class="mr-1"
+        :to="{ name: 'cart' }"
+      >
         <v-badge
           :content="cart.itemCount"
           :model-value="cart.itemCount > 0"
@@ -112,4 +121,3 @@ async function handleLogout() {
     </template>
   </v-app-bar>
 </template>
-

@@ -1,0 +1,106 @@
+# Pre-commit hook configuration.
+# Run `pre-commit install` after cloning to activate.
+# Run `pre-commit run --all-files` to check everything manually.
+
+default_language_version:
+  python: python3.11
+
+repos:
+  # ─── General Hooks ──────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace        # Remove trailing whitespace
+        exclude: ".*\\.md$"            # Don't touch markdown (trailing spaces = <br>)
+      - id: end-of-file-fixer          # Ensure files end with newline
+      - id: check-yaml                 # Validate YAML syntax
+      - id: check-json                 # Validate JSON syntax
+      - id: check-toml                 # Validate TOML syntax
+      - id: check-merge-conflict       # Detect unresolved merge conflicts
+      - id: check-added-large-files    # Block files > 500KB
+        args: ["--maxkb=500"]
+      - id: debug-statements           # Block print() and pdb left in code
+      - id: check-case-conflict        # Detect files that differ only in case
+
+  # ─── Python Formatting (Black) ─────────────────────────────────────
+  - repo: https://github.com/psf/black
+    rev: 24.2.0
+    hooks:
+      - id: black
+        args: ["--config=pyproject.toml"]
+
+  # ─── Python Import Sorting (isort) ─────────────────────────────────
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--settings-path=pyproject.toml"]
+
+  # ─── Python Linting (flake8) ───────────────────────────────────────
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args: ["--config=setup.cfg"]
+        additional_dependencies:
+          - flake8-bugbear           # Catches common Python gotchas
+          - flake8-comprehensions    # Better list/dict/set comprehensions
+
+  # ─── Python Docstring Coverage (interrogate) ────────────────────────
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.5.0
+    hooks:
+      - id: interrogate
+        args: ["-c", "pyproject.toml"]
+        pass_filenames: false
+
+  # ─── Security: Detect Secrets ───────────────────────────────────────
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: "package-lock\\.json"
+
+  # ─── Security: Bandit (Python security linter) ─────────────────────
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.7
+    hooks:
+      - id: bandit
+        args: ["-c", "pyproject.toml"]
+        additional_dependencies: ["bandit[toml]"]
+
+  # ─── Frontend: ESLint ───────────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint (frontend)
+        entry: npx eslint --fix
+        language: system
+        types_or: [javascript, tsx, ts, vue]
+        files: "shopforge/webapp/src/"
+
+  # ─── Frontend: Prettier ─────────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Prettier (frontend)
+        entry: npx prettier --write
+        language: system
+        types_or: [javascript, tsx, ts, vue, css, scss, json]
+        files: "shopforge/webapp/src/"
+
+  # ─── YAML/Docker Linting ───────────────────────────────────────────
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: ["-d", "{extends: relaxed, rules: {line-length: {max: 120}}}"]
+
+  # ─── Commit Message Formatting ─────────────────────────────────────
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.1.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [feat, fix, docs, style, refactor, perf, test, ci, chore, revert]

@@ -24,7 +24,12 @@ defineProps<{ product: Product }>();
     elevation="0"
     border
     class="product-card"
-    style="transition: box-shadow 0.2s, transform 0.2s; overflow: hidden"
+    style="
+      transition:
+        box-shadow 0.2s,
+        transform 0.2s;
+      overflow: hidden;
+    "
   >
     <!-- Image -->
     <div style="position: relative; overflow: hidden">
@@ -33,15 +38,21 @@ defineProps<{ product: Product }>();
         :alt="product.name"
         height="220"
         cover
-        style="background: #F1F5F9"
+        style="background: #f1f5f9"
       >
         <template #placeholder>
-          <div class="d-flex align-center justify-center fill-height" style="background: #F1F5F9">
+          <div
+            class="d-flex align-center justify-center fill-height"
+            style="background: #f1f5f9"
+          >
             <v-icon size="48" color="grey-300">fa:far fa-image</v-icon>
           </div>
         </template>
         <template #error>
-          <div class="d-flex align-center justify-center fill-height" style="background: #F1F5F9">
+          <div
+            class="d-flex align-center justify-center fill-height"
+            style="background: #f1f5f9"
+          >
             <v-icon size="48" color="grey-300">fa:fas fa-image-slash</v-icon>
           </div>
         </template>
@@ -53,7 +64,12 @@ defineProps<{ product: Product }>();
         color="error"
         size="x-small"
         class="font-weight-bold"
-        style="position: absolute; top: 10px; right: 10px; letter-spacing: 0.5px"
+        style="
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          letter-spacing: 0.5px;
+        "
       >
         -{{ product.discount_percentage }}%
       </v-chip>
@@ -61,29 +77,46 @@ defineProps<{ product: Product }>();
 
     <!-- Content -->
     <v-card-text class="pa-4">
-      <p class="text-caption text-medium-emphasis mb-1 text-uppercase" style="letter-spacing: 0.8px">
+      <p
+        class="text-caption text-medium-emphasis mb-1 text-uppercase"
+        style="letter-spacing: 0.8px"
+      >
         {{ product.category_name }}
       </p>
       <p
         class="text-body-1 font-weight-semibold mb-1"
-        style="color: #1E293B; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden"
+        style="
+          color: #1e293b;
+          line-height: 1.3;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        "
       >
         {{ product.name }}
       </p>
       <p
         v-if="product.short_description"
         class="text-body-2 text-medium-emphasis mb-3"
-        style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden"
+        style="
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        "
       >
         {{ product.short_description }}
       </p>
 
       <div class="d-flex align-center gap-2">
-        <span class="text-h6 font-weight-bold" style="color: #1565C0">${{ product.price }}</span>
+        <span class="text-h6 font-weight-bold" style="color: #1565c0"
+          >${{ product.price }}</span
+        >
         <span
           v-if="product.is_on_sale && product.compare_at_price"
           class="text-body-2 text-decoration-line-through"
-          style="color: #94A3B8"
+          style="color: #94a3b8"
         >
           ${{ product.compare_at_price }}
         </span>
@@ -98,4 +131,3 @@ defineProps<{ product: Product }>();
   transform: translateY(-2px);
 }
 </style>
-

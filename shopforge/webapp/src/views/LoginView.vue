@@ -2,8 +2,8 @@
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useAuthStore } from "@/stores/auth";
 import { useNotification } from "@/composables/useNotification";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const route = useRoute();
@@ -21,7 +21,10 @@ async function handleLogin() {
   loading.value = true;
   try {
     await auth.login(email.value, password.value);
-    notify(`Welcome back${auth.fullName ? ", " + auth.fullName : ""}!`, "success");
+    notify(
+      `Welcome back${auth.fullName ? ", " + auth.fullName : ""}!`,
+      "success",
+    );
     const redirect = (route.query.redirect as string) || "/";
     router.push(redirect);
   } catch {
@@ -33,38 +36,57 @@ async function handleLogin() {
 </script>
 
 <template>
-  <v-container fluid class="fill-height pa-0" style="background: #F0F4F8;">
+  <v-container fluid class="fill-height pa-0" style="background: #f0f4f8">
     <v-row no-gutters class="fill-height">
-
       <!-- Left panel — branding -->
       <v-col
         cols="12"
         md="5"
         class="d-none d-md-flex flex-column justify-center align-center"
-        style="background: linear-gradient(145deg, #1565C0 0%, #0D47A1 100%); min-height: 100vh;"
+        style="
+          background: linear-gradient(145deg, #1565c0 0%, #0d47a1 100%);
+          min-height: 100vh;
+        "
       >
         <div class="text-center px-10">
           <v-icon size="64" color="white" class="mb-6">fa:fas fa-store</v-icon>
-          <h1 class="text-h3 font-weight-bold text-white mb-4" style="letter-spacing: -0.5px">
+          <h1
+            class="text-h3 font-weight-bold text-white mb-4"
+            style="letter-spacing: -0.5px"
+          >
             ShopForge
           </h1>
-          <p class="text-h6 text-white" style="opacity: 0.8; font-weight: 400; line-height: 1.6">
+          <p
+            class="text-h6 text-white"
+            style="opacity: 0.8; font-weight: 400; line-height: 1.6"
+          >
             Your corporate e-commerce platform for smart, scalable selling.
           </p>
 
           <v-divider color="white" class="my-8" style="opacity: 0.2" />
 
           <div class="d-flex flex-column gap-4 text-white text-left">
-            <div v-for="feature in features" :key="feature.text" class="d-flex align-center gap-3">
+            <div
+              v-for="feature in features"
+              :key="feature.text"
+              class="d-flex align-center gap-3"
+            >
               <v-icon :icon="feature.icon" size="20" style="opacity: 0.9" />
-              <span class="text-body-1" style="opacity: 0.85">{{ feature.text }}</span>
+              <span class="text-body-1" style="opacity: 0.85">{{
+                feature.text
+              }}</span>
             </div>
           </div>
         </div>
       </v-col>
 
       <!-- Right panel — form -->
-      <v-col cols="12" md="7" class="d-flex align-center justify-center" style="min-height: 100vh">
+      <v-col
+        cols="12"
+        md="7"
+        class="d-flex align-center justify-center"
+        style="min-height: 100vh"
+      >
         <v-card
           flat
           width="100%"
@@ -77,12 +99,19 @@ async function handleLogin() {
           <div class="mb-8">
             <div class="d-flex align-center gap-2 mb-6 d-md-none">
               <v-icon color="primary" size="24">fa:fas fa-store</v-icon>
-              <span class="text-h6 font-weight-bold text-primary">ShopForge</span>
+              <span class="text-h6 font-weight-bold text-primary"
+                >ShopForge</span
+              >
             </div>
-            <h2 class="text-h4 font-weight-bold mb-1" style="color: #1E293B; letter-spacing: -0.5px">
+            <h2
+              class="text-h4 font-weight-bold mb-1"
+              style="color: #1e293b; letter-spacing: -0.5px"
+            >
               Welcome back
             </h2>
-            <p class="text-body-1" style="color: #64748B">Sign in to your account to continue</p>
+            <p class="text-body-1" style="color: #64748b">
+              Sign in to your account to continue
+            </p>
           </div>
 
           <!-- Error alert -->
@@ -119,7 +148,9 @@ async function handleLogin() {
               label="Password"
               :type="showPassword ? 'text' : 'password'"
               prepend-inner-icon="fa:fas fa-lock"
-              :append-inner-icon="showPassword ? 'fa:far fa-eye-slash' : 'fa:far fa-eye'"
+              :append-inner-icon="
+                showPassword ? 'fa:far fa-eye-slash' : 'fa:far fa-eye'
+              "
               autocomplete="current-password"
               variant="outlined"
               density="comfortable"
@@ -138,7 +169,12 @@ async function handleLogin() {
               rounded="lg"
               :loading="loading"
               elevation="0"
-              style="height: 52px; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.3px"
+              style="
+                height: 52px;
+                font-size: 0.95rem;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+              "
             >
               Sign In
             </v-btn>
@@ -156,4 +192,3 @@ const features = [
   { icon: "fa:fas fa-boxes-stacked", text: "Full inventory management" },
 ];
 </script>
-

@@ -23,7 +23,11 @@ const state = reactive({
 });
 
 export function useNotification() {
-  function notify(message: string, type: NotificationType = "info", timeout = 4000) {
+  function notify(
+    message: string,
+    type: NotificationType = "info",
+    timeout = 4000,
+  ) {
     state.message = message;
     state.type = type;
     state.timeout = timeout;
