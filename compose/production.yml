@@ -44,7 +44,7 @@ services:
 
   # ─── Django (Gunicorn) ────────────────────────────────────────────────
   django:
-    image: ghcr.io/yourorg/shopforge:${IMAGE_TAG:-latest}
+    image: ghcr.io/mbhasin-stgi/shopforge:${IMAGE_TAG:-latest}
     environment:
       <<: *common-env
     ports:
@@ -71,7 +71,7 @@ services:
   # ─── Celery Worker ────────────────────────────────────────────────────
   # Processes background tasks (order confirmation emails, inventory updates)
   celery_worker:
-    image: ghcr.io/yourorg/shopforge:${IMAGE_TAG:-latest}
+    image: ghcr.io/mbhasin-stgi/shopforge:${IMAGE_TAG:-latest}
     command: celery -A config.celery_app worker -l info --concurrency=4
     environment:
       <<: *common-env
@@ -90,7 +90,7 @@ services:
   # Scheduler — sends periodic tasks to the worker queue.
   # Only ONE instance of beat should ever run (no replicas).
   celery_beat:
-    image: ghcr.io/yourorg/shopforge:${IMAGE_TAG:-latest}
+    image: ghcr.io/mbhasin-stgi/shopforge:${IMAGE_TAG:-latest}
     command: >
       celery -A config.celery_app beat -l info
       --scheduler django_celery_beat.schedulers:DatabaseScheduler

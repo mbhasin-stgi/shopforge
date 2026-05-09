@@ -34,7 +34,7 @@ Set in GitHub Settings → Secrets → Actions:
 
 ## Docker Image Tags
 
-Images are pushed to `ghcr.io/yourorg/shopforge` with these tags:
+Images are pushed to `ghcr.io/mbhasin-stgi/shopforge` with these tags:
 
 - `main` — latest commit on main branch
 - `v1.2.3` — semantic version tags

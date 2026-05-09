@@ -8,7 +8,7 @@ The production stack is defined in `compose/production.yml` and uses a pre-built
 
 | Service | Image | Port |
 |---------|-------|------|
-| `django` | `ghcr.io/yourorg/shopforge:<tag>` | 8000 |
+| `django` | `ghcr.io/mbhasin-stgi/shopforge:<tag>` | 8000 |
 | `redis` | `redis:6-alpine` | internal |
 | `celery_worker` | same as django | — |
 | `celery_beat` | same as django | — |

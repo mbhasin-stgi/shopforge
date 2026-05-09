@@ -14,7 +14,7 @@ Get ShopForge running locally in under 5 minutes.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourorg/shopforge.git
+git clone https://github.com/mbhasin-stgi/shopforge.git
 cd shopforge
 ```
 

@@ -1,6 +1,6 @@
 site_name: ShopForge Documentation
 site_description: Technical documentation for the ShopForge e-commerce platform
-repo_url: https://github.com/yourorg/shopforge
+repo_url: https://github.com/mbhasin-stgi/shopforge
 docs_dir: docs
 
 theme:

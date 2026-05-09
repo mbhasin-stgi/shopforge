@@ -117,17 +117,22 @@ TEMPLATES = [
 # ============================================================
 # DATABASE
 # ============================================================
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("POSTGRES_DB", default="shopforge"),
-        "USER": env("POSTGRES_USER", default="shopforge"),
-        "PASSWORD": env("POSTGRES_PASSWORD", default="shopforge_dev_password"),
-        "HOST": env("POSTGRES_HOST", default="postgres"),
-        "PORT": env("POSTGRES_PORT", default="5432"),
-        "ATOMIC_REQUESTS": True,  # Wrap each request in a transaction
+# Prefer DATABASE_URL (12-factor, used by CI and production).
+# Falls back to individual POSTGRES_* vars for local Docker Compose.
+if env("DATABASE_URL", default=None):
+    DATABASES = {"default": env.db("DATABASE_URL")}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("POSTGRES_DB", default="shopforge"),
+            "USER": env("POSTGRES_USER", default="shopforge"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="shopforge_dev_password"),
+            "HOST": env("POSTGRES_HOST", default="postgres"),
+            "PORT": env("POSTGRES_PORT", default="5432"),
+        }
     }
-}
+DATABASES["default"]["ATOMIC_REQUESTS"] = True  # Wrap each request in a transaction
 
 # ============================================================
 # AUTHENTICATION

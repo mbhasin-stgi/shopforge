@@ -6,7 +6,7 @@ Thank you for contributing! Please read this guide before opening a PR.
 
 ```bash
 # 1. Clone and enter
-git clone https://github.com/yourorg/shopforge.git
+git clone https://github.com/mbhasin-stgi/shopforge.git
 cd shopforge
 
 # 2. Start the dev stack

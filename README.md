@@ -18,7 +18,7 @@ A production-grade e-commerce platform built with Django 4.2, Django REST Framew
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourorg/shopforge.git
+git clone https://github.com/mbhasin-stgi/shopforge.git
 cd shopforge
 
 # Start everything (builds containers, runs migrations, seeds data)

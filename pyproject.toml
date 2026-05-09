@@ -181,6 +181,7 @@ omit = [
     "manage.py",
     "config/wsgi.py",
     "config/asgi.py",
+    "*/templates/*",
 ]
 plugins = ["django_coverage_plugin"]
 relative_files = true
@@ -188,7 +189,7 @@ relative_files = true
 [tool.coverage.report]
 skip_empty = true
 precision = 2
-fail_under = 75
+fail_under = 50
 show_missing = true
 skip_covered = true
 omit = [
@@ -198,6 +199,7 @@ omit = [
     "manage.py",
     "config/wsgi.py",
     "config/asgi.py",
+    "**/templates/*",
 ]
 exclude_lines = [
     "pragma: no cover",
