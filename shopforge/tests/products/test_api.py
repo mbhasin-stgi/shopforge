@@ -10,7 +10,7 @@ from django.urls import reverse
 
 @pytest.mark.django_db
 class TestProductListAPI:
-    """Tests for GET /api/products/"""
+    """Tests for GET /api/products/ endpoint."""
 
     url = reverse("api:products:product-list")
 
