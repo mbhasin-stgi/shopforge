@@ -53,6 +53,7 @@ repos:
       - id: interrogate
         args: ["-c", "pyproject.toml"]
         pass_filenames: false
+        additional_dependencies: ["setuptools"]
 
   # ─── Security: Detect Secrets ───────────────────────────────────────
   - repo: https://github.com/Yelp/detect-secrets
