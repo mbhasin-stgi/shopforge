@@ -60,6 +60,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth",
     "dj_rest_auth.registration",
+    "django_vite",
 ]
 
 LOCAL_APPS = [
@@ -133,6 +134,13 @@ DATABASES = {
 # ============================================================
 AUTH_USER_MODEL = "users.User"  # Custom user model (ALWAYS do this from day 1!)
 
+# ─── django-allauth: email-only authentication ──────────────────────────────
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = "none"  # Disable mandatory email confirmation in dev
+
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
@@ -158,7 +166,6 @@ USE_TZ = True  # ALWAYS store datetimes in UTC
 # ============================================================
 STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR / "staticfiles")
-STATICFILES_DIRS = [str(BASE_DIR / "shopforge" / "static")]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = str(BASE_DIR / "media")
@@ -276,11 +283,18 @@ EMAIL_HOST = env("EMAIL_HOST", default="mailhog")
 EMAIL_PORT = env.int("EMAIL_PORT", default=1025)
 DEFAULT_FROM_EMAIL = "ShopForge <noreply@shopforge.dev>"
 
+# ADMINS receive error emails and daily summaries.
+# Override in production via env var: DJANGO_ADMIN_EMAIL=ops@yourcompany.com
+ADMIN_EMAIL = env("DJANGO_ADMIN_EMAIL", default="admin@shopforge.dev")
+ADMINS = [("ShopForge Admin", ADMIN_EMAIL)]
+
 # ============================================================
 # SECURITY (base — production.py tightens these further)
 # ============================================================
 SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = True
+# CSRF cookie must NOT be HttpOnly — JavaScript (axios) reads it to send as
+# X-CSRFToken header on every POST/PUT/PATCH/DELETE request.
+CSRF_COOKIE_HTTPONLY = False
 X_FRAME_OPTIONS = "DENY"
 
 # ============================================================
@@ -327,3 +341,20 @@ LOGGING = {
         },
     },
 }
+
+# ─── Django Vite ─────────────────────────────────────────────────────
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": DEBUG,
+        "dev_server_host": "localhost",
+        "dev_server_port": 5174,
+        "manifest_path": BASE_DIR / "shopforge" / "webapp" / "dist" / "manifest.json",
+        "static_url_prefix": "webapp/dist",
+    }
+}
+
+# Static files — Vite builds go into the static directory
+STATICFILES_DIRS = [
+    BASE_DIR / "shopforge" / "webapp" / "dist",
+    BASE_DIR / "shopforge" / "static",
+]

@@ -143,6 +143,8 @@ class OrderItem(TimeStampedModel):
     @property
     def line_total(self):
         """Calculate total for this line item."""
+        if self.price_at_purchase is None or self.quantity is None:
+            return None
         return self.price_at_purchase * self.quantity
 
     def save(self, *args, **kwargs):

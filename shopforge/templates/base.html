@@ -1,0 +1,20 @@
+{% load django_vite static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopForge{% endblock %}</title>
+
+    <!-- FontAwesome Free — self-hosted via Django static, woff2 fonts co-located -->
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+
+    {# Vite injects CSS (Vuetify, app styles) in production #}
+    {% vite_hmr_client %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

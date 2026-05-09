@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load django_vite %}
+
+{% block title %}ShopForge — Shop Smart{% endblock %}
+
+{% block content %}
+{# This div is where Vue mounts. Everything inside is replaced by Vue. #}
+<div id="app">
+    {# Loading state (shown before Vue hydrates) #}
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;">
+        <p>Loading ShopForge...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% vite_asset "shopforge/webapp/src/main.ts" %}
+{% endblock %}

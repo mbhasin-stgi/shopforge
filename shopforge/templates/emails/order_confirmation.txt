@@ -1,0 +1,41 @@
+ShopForge — Order Confirmed
+===========================
+
+Hi {{ customer_name }},
+
+Thank you for your order! We've received it and it's being processed.
+You'll receive another email when it ships.
+
+ORDER DETAILS
+-------------
+Order Number : {{ order.order_number }}
+Date         : {{ order.created_at|date:"N j, Y" }}
+Status       : {{ order.get_status_display }}
+Payment      : {{ order.get_payment_status_display }}
+
+ITEMS ORDERED
+-------------
+{% for item in items %}
+  {{ item.quantity }}x {{ item.product_name }} (SKU: {{ item.product_sku }})
+     Unit Price : ${{ item.price_at_purchase }}
+     Line Total : ${{ item.line_total }}
+{% endfor %}
+
+TOTALS
+------
+  Subtotal : ${{ order.subtotal }}
+{% if order.tax_amount %}  Tax      : ${{ order.tax_amount }}
+{% endif %}{% if order.shipping_cost %}  Shipping : ${{ order.shipping_cost }}
+{% endif %}{% if order.discount_amount %}  Discount : -${{ order.discount_amount }}
+{% endif %}  TOTAL    : ${{ order.total }}
+
+SHIPPING ADDRESS
+----------------
+{{ order.shipping_address_line1 }}
+{% if order.shipping_address_line2 %}{{ order.shipping_address_line2 }}
+{% endif %}{{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal_code }}
+{{ order.shipping_country }}
+
+---
+Questions? Contact our support team.
+ShopForge — Corporate E-Commerce Platform

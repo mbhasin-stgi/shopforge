@@ -142,6 +142,7 @@ SESSION_CACHE_ALIAS = "default"
 DJANGO_VITE = {
     "default": {
         "dev_mode": False,
-        "manifest_path": str(BASE_DIR / "shopforge" / "webapp" / "dist" / ".vite" / "manifest.json"),
+        "manifest_path": BASE_DIR / "shopforge" / "webapp" / "dist" / ".vite" / "manifest.json",
+        "static_url_prefix": "",
     }
 }

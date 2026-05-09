@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load django_vite %}
+
+{% block title %}Login — ShopForge{% endblock %}
+
+{% block content %}
+<div id="login-app"></div>
+{% endblock %}
+
+{% block scripts %}
+{% vite_asset "shopforge/webapp/src/login.ts" %}
+{% endblock %}
