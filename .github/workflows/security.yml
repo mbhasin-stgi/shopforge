@@ -1,0 +1,88 @@
+name: Security Scanning
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly on Monday at 9 AM UTC (catches new CVEs in dependencies)
+    - cron: "0 9 * * 1"
+
+jobs:
+  # ─── Job 1: Semgrep — Static Application Security Testing (SAST) ─────────
+  # Scans your code for security patterns (SQL injection, XSS, hardcoded secrets, etc.)
+  semgrep:
+    name: Semgrep SAST
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: semgrep scan --config auto --error --json > semgrep-results.json
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+      # Save the results JSON even if Semgrep found issues (for review)
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-results
+          path: semgrep-results.json
+
+  # ─── Job 2: CodeQL — GitHub's own deep code analysis ────────────────────
+  # Understands code semantics (not just patterns) — catches logic-level vulnerabilities
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write  # Required to upload results to GitHub Security tab
+    steps:
+      - uses: actions/checkout@v4
+
+      # Initialise CodeQL for Python and JavaScript analysis
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python, javascript
+
+      # CodeQL auto-builds the project and analyses it
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  # ─── Job 3: Dependency Audit — check for known CVEs in packages ──────────
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # pip-audit checks PyPI packages against the OSV vulnerability database
+      - name: Check Python dependencies for vulnerabilities
+        run: |
+          pip install poetry pip-audit
+          poetry export -f requirements.txt -o /tmp/requirements-export.txt --without-hashes
+          pip-audit -r /tmp/requirements-export.txt
+
+      # npm audit checks node_modules against the npm advisory database
+      # --audit-level=high only fails on HIGH or CRITICAL vulnerabilities
+      - name: Check npm dependencies
+        run: npm audit --audit-level=high
+
+  # ─── Job 4: detect-secrets — scan for accidentally committed credentials ──
+  detect-secrets:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Posts inline PR review comments on lines that look like secrets
+      - name: Detect secrets
+        uses: reviewdog/action-detect-secrets@v0.16.0
+        with:
+          reporter: github-pr-review

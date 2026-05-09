@@ -4,9 +4,13 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 from django.urls import include, path
 
+from shopforge.apps.core.api.views import health_check
+
 app_name = "api"
 
 urlpatterns = [
+    # Health check — used by Docker HEALTHCHECK and load balancers
+    path("health/", health_check, name="health-check"),
     # Product catalog
     path("products/", include("shopforge.apps.products.api.urls", namespace="products")),
     # Order management

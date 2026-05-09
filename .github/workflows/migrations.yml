@@ -1,0 +1,52 @@
+name: Migration Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+    # Only run when model files change — no need to check migrations on every PR
+    paths:
+      - "shopforge/apps/**/models.py"
+      - "shopforge/apps/**/models/**"
+
+jobs:
+  check-migrations:
+    name: Missing Migrations
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: shopforge
+          POSTGRES_PASSWORD: shopforge  # pragma: allowlist secret
+          POSTGRES_DB: test_shopforge
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://shopforge:shopforge@localhost:5432/test_shopforge  # pragma: allowlist secret
+      DJANGO_SETTINGS_MODULE: config.settings.test
+      SECRET_KEY: test-secret-key  # pragma: allowlist secret
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install --no-interaction
+
+      # --check → exit with non-zero code if any migration would be created
+      # --dry-run → don't actually write any files, just report what would happen
+      # If this fails, the developer forgot to run `manage.py makemigrations`
+      - name: Check for missing migrations
+        run: poetry run python manage.py makemigrations --check --dry-run

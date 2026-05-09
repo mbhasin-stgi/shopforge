@@ -208,9 +208,8 @@ build-docs: ## Build MkDocs documentation
 		mkdocs build --clean
 
 .PHONY: serve-docs
-serve-docs: ## Serve docs locally on port 8002
-	${DOCKER_COMPOSE} -f ${LOCAL_YML} -p ${PROJECT_NAME} --env-file=./.env run -p 8002:8000 --rm ${c} \
-		mkdocs serve --dev-addr 0.0.0.0:8000
+serve-docs: ## Serve docs locally on port 8002 (runs on host, not in Docker)
+	poetry run mkdocs serve --dev-addr 0.0.0.0:8002
 
 # ============================================================
 # OPENAPI SCHEMA

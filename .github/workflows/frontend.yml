@@ -1,0 +1,71 @@
+name: Frontend Checks
+
+on:
+  pull_request:
+    branches: [main, develop]
+    # Only run this workflow when frontend files change — skip for pure Python PRs
+    paths:
+      - "shopforge/webapp/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig*.json"
+      - "vite.config.ts"
+      - "eslint.config.ts"
+
+concurrency:
+  group: frontend-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── Job 1: ESLint + TypeScript type checking ────────────────────────────
+  lint-and-type-check:
+    name: ESLint & TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Install Node 20 and enable built-in npm cache
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # npm ci is stricter than npm install — uses exact versions from package-lock.json
+      - name: Install dependencies
+        run: npm ci
+
+      # Runs: eslint ./shopforge/webapp/src --ext .vue,.js,.ts,...
+      - name: Run ESLint
+        run: npm run lint
+
+      # Runs: vue-tsc --build --force
+      # Type-checks all Vue + TypeScript files without emitting output files
+      - name: Type check
+        run: npm run type-check
+
+  # ─── Job 2: Vitest unit tests with coverage ──────────────────────────────
+  vitest:
+    name: Frontend Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Runs: vitest run --coverage
+      # Executes all *.spec.ts / *.test.ts files and measures code coverage
+      - name: Run Vitest
+        run: npm run coverage
+
+      # Save coverage/ folder as a downloadable artifact for review
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: coverage/

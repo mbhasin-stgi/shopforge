@@ -1,0 +1,53 @@
+# ─── Git ──────────────────────────────────────────────────────────────
+.git
+.gitignore
+.github
+
+# ─── Python ───────────────────────────────────────────────────────────
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info
+dist/
+
+# ─── Node ─────────────────────────────────────────────────────────────
+node_modules/
+coverage/
+
+# ─── IDE ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── Local Docker (dev-only compose files and scripts) ────────────────
+compose/local/
+compose/pytest.yml
+
+# ─── Environment files (NEVER send secrets to Docker daemon) ──────────
+.env
+.envs/
+compose/.envs/
+*.env.local
+
+# ─── Documentation ────────────────────────────────────────────────────
+ECOM-docs/
+*.md
+!README.md
+
+# ─── Test data ────────────────────────────────────────────────────────
+shopforge/tests/
+sample_data/
+
+# ─── OS files ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Pre-commit / CI ──────────────────────────────────────────────────
+.pre-commit-config.yaml
+.secrets.baseline

@@ -1,0 +1,112 @@
+# Production Docker Compose
+# Usage: docker compose -f compose/production.yml up -d
+#
+# Required environment variables (set in your deployment environment or .env):
+#   DATABASE_URL    - e.g. postgres://user:pass@db-host:5432/shopforge
+#   REDIS_URL       - e.g. redis://redis:6379/0  (or managed Redis URL)
+#   SECRET_KEY      - Django secret key (long random string)
+#   ALLOWED_HOSTS   - comma-separated hostnames, e.g. shopforge.com,www.shopforge.com
+#   IMAGE_TAG       - Docker image tag to deploy (defaults to "latest")
+#   SENTRY_DSN      - (optional) Sentry error tracking DSN
+
+version: "3.9"
+
+# ─── Shared environment block ─────────────────────────────────────────
+# YAML anchor: all services merge this with <<: *common-env
+x-common-env: &common-env
+  DJANGO_SETTINGS_MODULE: config.settings.production
+  DATABASE_URL: ${DATABASE_URL}
+  REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+  SECRET_KEY: ${SECRET_KEY}
+  ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+  SENTRY_DSN: ${SENTRY_DSN:-}
+
+services:
+  # ─── Redis ────────────────────────────────────────────────────────────
+  # Used by Celery as the message broker and Django as the cache backend.
+  # If you prefer a managed Redis (AWS ElastiCache, Redis Cloud), remove
+  # this service and set REDIS_URL to the external URL instead.
+  redis:
+    image: redis:6-alpine
+    command: redis-server --appendonly yes  # Enable AOF persistence
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    restart: unless-stopped
+
+  # ─── Django (Gunicorn) ────────────────────────────────────────────────
+  django:
+    image: ghcr.io/yourorg/shopforge:${IMAGE_TAG:-latest}
+    environment:
+      <<: *common-env
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+        reservations:
+          memory: 512M
+          cpus: "0.5"
+    restart: unless-stopped
+
+  # ─── Celery Worker ────────────────────────────────────────────────────
+  # Processes background tasks (order confirmation emails, inventory updates)
+  celery_worker:
+    image: ghcr.io/yourorg/shopforge:${IMAGE_TAG:-latest}
+    command: celery -A config.celery_app worker -l info --concurrency=4
+    environment:
+      <<: *common-env
+    depends_on:
+      redis:
+        condition: service_healthy
+      django:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    restart: unless-stopped
+
+  # ─── Celery Beat ──────────────────────────────────────────────────────
+  # Scheduler — sends periodic tasks to the worker queue.
+  # Only ONE instance of beat should ever run (no replicas).
+  celery_beat:
+    image: ghcr.io/yourorg/shopforge:${IMAGE_TAG:-latest}
+    command: >
+      celery -A config.celery_app beat -l info
+      --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    environment:
+      <<: *common-env
+    depends_on:
+      redis:
+        condition: service_healthy
+      django:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+    driver: local

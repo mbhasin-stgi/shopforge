@@ -1,0 +1,54 @@
+site_name: ShopForge Documentation
+site_description: Technical documentation for the ShopForge e-commerce platform
+repo_url: https://github.com/yourorg/shopforge
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    primary: blue
+    accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Quick Start: getting-started/quick-start.md
+      - Prerequisites: getting-started/prerequisites.md
+      - Environment Variables: getting-started/env-vars.md
+  - Architecture:
+      - Overview: architecture/overview.md
+      - Settings: architecture/settings.md
+      - API Design: architecture/api-design.md
+      - Background Tasks: architecture/tasks.md
+      - ADR-001 Custom User Model: architecture/001-custom-user-model.md
+  - Development:
+      - Code Style: development/code-style.md
+      - Testing: development/testing.md
+      - Debugging: development/debugging.md
+  - Deployment:
+      - Docker: deployment/docker.md
+      - CI/CD: deployment/ci-cd.md
+      - Monitoring: deployment/monitoring.md
+  - API Reference:
+      - Authentication: api/authentication.md
+      - Products: api/products.md
+      - Orders: api/orders.md
+      - Inventory: api/inventory.md
+  - Contributing: CONTRIBUTING.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite

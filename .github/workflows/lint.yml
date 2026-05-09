@@ -1,0 +1,60 @@
+name: Lint & Format
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "**.py"
+      - "pyproject.toml"
+      - "setup.cfg"
+      - ".pre-commit-config.yaml"
+
+concurrency:
+  group: lint-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── Job 1: Run all pre-commit hooks (black, isort, flake8, bandit, etc.) ───
+  pre-commit:
+    name: Pre-commit Hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pre-commit hooks
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      # Runs every hook defined in .pre-commit-config.yaml
+      - uses: pre-commit/action@v3.0.1
+
+  # ─── Job 2: Advanced pylint analysis (stricter than flake8) ──────────────────
+  pylint:
+    name: Pylint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install --no-interaction
+
+      # --rcfile=pyproject.toml reads [tool.pylint.*] sections
+      # --fail-under=8.0 means pylint score must be >= 8.0/10 or this job fails
+      - name: Run Pylint
+        run: poetry run pylint shopforge/ --rcfile=pyproject.toml --fail-under=8.0
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+          SECRET_KEY: test-secret-key-not-for-production  # pragma: allowlist secret
+          DATABASE_URL: sqlite:///test.db

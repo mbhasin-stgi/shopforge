@@ -1,0 +1,115 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+
+concurrency:
+  group: test-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    name: Python Tests
+    runs-on: ubuntu-latest
+
+    # ─── Side-car containers (start before any steps run) ────────────────────
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: shopforge
+          POSTGRES_PASSWORD: shopforge  # pragma: allowlist secret
+          POSTGRES_DB: test_shopforge
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:6-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    # ─── Environment variables available to ALL steps in this job ────────────
+    env:
+      DATABASE_URL: postgres://shopforge:shopforge@localhost:5432/test_shopforge  # pragma: allowlist secret
+      REDIS_URL: redis://localhost:6379/0
+      DJANGO_SETTINGS_MODULE: config.settings.test
+      SECRET_KEY: test-secret-key-not-for-production  # pragma: allowlist secret
+
+    steps:
+      # Step 1: Download repository code onto the runner machine
+      - uses: actions/checkout@v4
+
+      # Step 2: Install Python 3.11
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Step 3: Restore cached virtualenv to skip re-downloading packages
+      # Cache key is a fingerprint of poetry.lock — invalidates when deps change
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: poetry-${{ hashFiles('poetry.lock') }}
+
+      # Step 4: Install all Python dependencies from pyproject.toml
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install --no-interaction
+
+      # Step 5: Create reports directory (needed for --junitxml output)
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      # Step 6: Run the full test suite with coverage measurement
+      # --cov          → measure code coverage (source defined in pyproject.toml)
+      # --cov-report=xml → save XML report for Codecov upload
+      # --cov-report=term-missing → print uncovered lines in terminal
+      # --junitxml     → save test results in standard XML for GitHub UI display
+      # -v             → print each test name as it runs
+      - name: Run tests with coverage
+        run: |
+          poetry run pytest \
+            --cov \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term-missing \
+            --junitxml=reports/junit.xml \
+            -v
+
+      # Step 7: Send coverage data to codecov.io for visual reports on PRs
+      # fail_ci_if_error=false → don't fail the whole run if Codecov is down
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      # Step 8: Save test results XML as a downloadable artifact in GitHub UI
+      # if: always() → runs even when tests fail so you can inspect failures
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: reports/junit.xml
+
+      # Step 9: Enforcement gate — fail the job if coverage drops below 85%
+      # This means PRs cannot merge if untested code lowers coverage
+      - name: Check coverage threshold
+        run: |
+          poetry run coverage report --fail-under=85
