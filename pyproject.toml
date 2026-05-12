@@ -55,7 +55,7 @@ cryptography = ">=43.0"                  # Cryptographic recipes
 # Testing
 pytest = "^8.0"
 pytest-django = "^4.7"
-pytest-celery = "^0.0"
+pytest-celery = ">=0.0,<1.4"
 pytest-sugar = "^1.0"                    # Pretty test output
 pytest-cov = "^4.1"                      # Coverage integration
 model-bakery = "^1.17"                   # Test fixture factories
