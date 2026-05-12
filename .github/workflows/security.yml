@@ -46,13 +46,13 @@ jobs:
 
       # Initialise CodeQL for Python and JavaScript analysis
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: python, javascript
 
       # CodeQL auto-builds the project and analyses it
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
 
   # ─── Job 3: Dependency Audit — check for known CVEs in packages ──────────
   dependency-audit:
