@@ -18,7 +18,7 @@ python = "^3.11"
 Django = "~5.2"                          # LTS version - security patches until April 2028
 djangorestframework = "^3.14"            # REST API framework
 django-environ = "^0.11"                 # Environment variables made easy
-django-model-utils = "^4.3"             # TimeStampedModel, StatusModel, etc.
+django-model-utils = ">=4.3,<6.0"             # TimeStampedModel, StatusModel, etc.
 django-filter = "^23.5"                  # Queryset filtering for DRF
 django-cors-headers = "^4.3"            # CORS headers for API
 django-extensions = "^3.2"              # shell_plus, show_urls, etc.
