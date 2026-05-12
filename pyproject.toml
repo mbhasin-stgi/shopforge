@@ -63,7 +63,7 @@ requests-mock = "^1.11"                  # Mock HTTP requests in tests
 factory-boy = "^3.3"                     # Advanced test factories
 
 # Code Quality
-black = "^24.0"                          # Code formatter
+black = ">=24,<27"                          # Code formatter
 isort = "^5.13"                          # Import sorter
 flake8 = "^7.0"                          # Linter
 pylint = "^3.0"                          # Advanced linter
