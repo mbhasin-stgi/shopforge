@@ -115,7 +115,7 @@ onMounted(async () => {
               color="primary"
               hide-details
               density="comfortable"
-              @update:model-value="(v: boolean) => setOnSale(v)"
+              @update:model-value="(v: boolean | null) => setOnSale(v ?? false)"
             />
           </v-card-text>
         </v-card>

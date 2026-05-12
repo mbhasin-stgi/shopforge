@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
 
 import { api } from "@/services/api";
 import { useAuthStore } from "@/stores/auth";
 import { useCartStore } from "@/stores/cart";
 
-const router = useRouter();
 const cart = useCartStore();
 const auth = useAuthStore();
 

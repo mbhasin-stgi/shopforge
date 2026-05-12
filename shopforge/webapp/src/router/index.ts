@@ -17,7 +17,7 @@ import ProductListView from "@/views/ProductListView.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
-  scrollBehavior: (to, from, savedPosition) => savedPosition ?? { top: 0 },
+  scrollBehavior: (_to, _from, savedPosition) => savedPosition ?? { top: 0 },
   routes: [
     // ─── Public routes ──────────────────────────────────────────
     {
