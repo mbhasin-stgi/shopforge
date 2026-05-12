@@ -60,7 +60,7 @@ jobs:
       # Step 3: Restore cached virtualenv to skip re-downloading packages
       # Cache key is a fingerprint of poetry.lock — invalidates when deps change
       - name: Cache Poetry virtualenv
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: poetry-${{ hashFiles('poetry.lock') }}
