@@ -81,7 +81,7 @@ ipython = "^8.20"                        # Enhanced Python shell
 django-coverage-plugin = "^3.1"         # Coverage for Django templates
 pre-commit = "^3.6"                      # Git hook framework
 uvicorn = {version = "^0.27", extras = ["standard"]}  # ASGI server for dev
-virtualenv = ">=20,<21"                  # Pin to v20.x; v21 removed LogCmd breaking build isolation
+virtualenv = ">=20,<22"                  # Pin to v20.x; v21 removed LogCmd breaking build isolation
 
 # Documentation
 mkdocs = "^1.5"
