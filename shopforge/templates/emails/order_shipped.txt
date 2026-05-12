@@ -1,0 +1,18 @@
+Hi {{ order.customer.get_full_name|default:order.customer.email }},
+
+Your order {{ order.order_number }} has shipped!
+
+{% if order.tracking_number %}Tracking: {{ order.tracking_number }}{% endif %}
+Shipping to: {{ order.shipping_address_line1 }}, {{ order.shipping_city }}, {{ order.shipping_state }}
+
+Items:
+{% for item in order.items.all %}
+  - {{ item.product_name }} (x{{ item.quantity }}) @ ${{ item.price_at_purchase }}
+{% endfor %}
+
+Total: ${{ order.total }}
+
+View your order: {{ site_url }}/orders/{{ order.id }}
+
+Thanks,
+The ShopForge Team

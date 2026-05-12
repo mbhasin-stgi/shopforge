@@ -1,7 +1,7 @@
 # ============================================================
 # BASE IMAGE
 # ============================================================
-ARG PYTHON_VERSION=3.11-slim-bullseye
+ARG PYTHON_VERSION=3.12-slim-bookworm
 FROM python:${PYTHON_VERSION} AS python-run-stage
 
 # ============================================================

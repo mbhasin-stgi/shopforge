@@ -1,0 +1,61 @@
+"""Initial migration for the reviews app."""
+
+import django.core.validators
+import django.db.models.deletion
+from django.conf import settings
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = [
+        ("products", "0001_initial"),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name="Review",
+            fields=[
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False)),
+                ("created_at", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reviews",
+                        to="products.product",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reviews",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                ("rating", models.PositiveSmallIntegerField(validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)])),
+                ("title", models.CharField(blank=True, max_length=200)),
+                ("body", models.TextField()),
+                ("is_verified_purchase", models.BooleanField(default=False)),
+                ("is_approved", models.BooleanField(default=True)),
+            ],
+            options={"ordering": ["-created_at"]},
+        ),
+        migrations.AlterUniqueTogether(
+            name="review",
+            unique_together={("product", "author")},
+        ),
+        migrations.AddIndex(
+            model_name="review",
+            index=models.Index(fields=["product", "is_approved"], name="reviews_rev_product_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="review",
+            index=models.Index(fields=["author"], name="reviews_rev_author_idx"),
+        ),
+    ]

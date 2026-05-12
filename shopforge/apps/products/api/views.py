@@ -11,6 +11,7 @@ They do NOT handle business logic. That belongs in services or model methods.
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from django.db import models
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -33,13 +34,20 @@ class CategoryViewSet(viewsets.ModelViewSet):
     delete: DELETE /api/products/categories/{id}/ (admin only)
     """
 
-    queryset = Category.objects.filter(is_active=True)
-    serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
     lookup_field = "slug"
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["name", "description"]
     ordering_fields = ["name", "display_order", "created_at"]
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        """Annotate product_count so the serializer field is populated."""
+        from django.db.models import Count
+
+        return Category.objects.filter(is_active=True).annotate(
+            product_count=Count("products", filter=models.Q(products__status="ACTIVE"))
+        )
 
 
 class ProductViewSet(viewsets.ModelViewSet):

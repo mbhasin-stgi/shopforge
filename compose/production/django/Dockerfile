@@ -4,7 +4,7 @@
 # Installs all Python packages into a virtualenv.
 # The virtualenv is then copied to the runtime stage — no pip/gcc ships
 # to production.
-FROM python:3.11-slim-bookworm AS python-build-stage
+FROM python:3.12-slim-bookworm AS python-build-stage
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -58,7 +58,7 @@ RUN npm run build
 # Stage 3: Runtime (Final Image)
 # ══════════════════════════════════════════════════════════════════════
 # Slim Python image with no gcc, no pip, no Node — just our app + deps.
-FROM python:3.11-slim-bookworm AS runtime
+FROM python:3.12-slim-bookworm AS runtime
 
 # Redeclare ARGs in this stage — Docker ARG scope is per-stage
 ARG BUILD_DATE

@@ -97,13 +97,25 @@ if SENTRY_DSN:
 # ============================================================
 # LOGGING (structured for log aggregation)
 # ============================================================
+# ============================================================
+# STRUCTURED JSON LOGGING
+#
+# Uses python-json-logger so every log line is a JSON object.
+# Compatible with Datadog, CloudWatch, Loki, GCP Logging etc.
+# Each entry includes: timestamp, level, logger, message, and
+# any extra kwargs passed to the logger call.
+# ============================================================
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
         "json": {
-            "()": "django.utils.log.ServerFormatter",
-            "format": "{levelname} {asctime} {module} {message}",
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "format": "%(asctime)s %(levelname)s %(name)s %(module)s %(message)s",
+        },
+        "verbose": {
+            # Fallback plain-text formatter (used if python-json-logger unavailable)
+            "format": "{levelname} {asctime} {name} {module} {message}",
             "style": "{",
         },
     },
@@ -123,7 +135,17 @@ LOGGING = {
             "level": "ERROR",
             "propagate": False,
         },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
         "shopforge": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "celery": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,

@@ -29,10 +29,7 @@ class TestOrderCreateAPI:
             "shipping_postal_code": "97201",
         }
 
-        with (
-            patch("shopforge.apps.orders.tasks.send_order_confirmation_email.delay"),
-            patch("shopforge.apps.inventory.tasks.reserve_stock_for_order.delay"),
-        ):
+        with patch("shopforge.apps.orders.tasks.send_order_confirmation_email.delay"):
             response = authenticated_client.post(self.url, data, format="json")
 
         assert response.status_code == 201
