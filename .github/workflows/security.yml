@@ -16,7 +16,7 @@ jobs:
     container:
       image: semgrep/semgrep
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Run Semgrep
         # --error is intentionally omitted: community rules include noisy
@@ -42,7 +42,7 @@ jobs:
     permissions:
       security-events: write  # Required to upload results to GitHub Security tab
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Initialise CodeQL for Python and JavaScript analysis
       - name: Initialize CodeQL
@@ -59,7 +59,7 @@ jobs:
     name: Dependency Audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:
@@ -82,7 +82,7 @@ jobs:
     name: Secret Detection
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:
