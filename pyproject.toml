@@ -42,7 +42,7 @@ dj-rest-auth = "^6.0"                   # REST endpoints for auth (login, logout
 Pillow = ">=12.2.0"                      # Image processing — CVE-2026-25990/40192/42308/10/11
 urllib3 = ">=2.7.0"                     # HTTP client (transitive) — CVE-2026-44431/32
 django-storages = "^1.14"               # Cloud storage backends (S3, GCS, etc.)
-gunicorn = "^22.0"                       # Production WSGI server
+gunicorn = ">=22,<27"                       # Production WSGI server
 whitenoise = "^6.6"                      # Static file serving
 sentry-sdk = "^1.40"                     # Error monitoring
 python-json-logger = "^2.0"             # Structured JSON logging for production
