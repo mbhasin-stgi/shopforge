@@ -81,6 +81,8 @@ onMounted(fetchOrders);
         elevation="0"
         border
         class="pa-0"
+        :to="{ name: 'order-detail', params: { id: order.id } }"
+        hover
       >
         <v-card-text class="pa-5">
           <div class="d-flex align-start justify-space-between flex-wrap gap-3">
@@ -100,23 +102,28 @@ onMounted(fetchOrders);
               </p>
             </div>
 
-            <!-- Right: total -->
-            <div class="text-right">
-              <p class="text-h6 font-weight-bold" style="color: #1565c0">
-                ${{ order.total }}
-              </p>
-              <p class="text-caption" style="color: #94a3b8">
-                Payment:
-                <span
-                  :class="
-                    order.payment_status === 'PAID'
-                      ? 'text-success'
-                      : 'text-warning'
-                  "
-                >
-                  {{ order.payment_status }}
-                </span>
-              </p>
+            <!-- Right: total + chevron -->
+            <div class="text-right d-flex align-center gap-2">
+              <div>
+                <p class="text-h6 font-weight-bold" style="color: #1565c0">
+                  ${{ order.total }}
+                </p>
+                <p class="text-caption" style="color: #94a3b8">
+                  Payment:
+                  <span
+                    :class="
+                      order.payment_status === 'PAID'
+                        ? 'text-success'
+                        : 'text-warning'
+                    "
+                  >
+                    {{ order.payment_status }}
+                  </span>
+                </p>
+              </div>
+              <v-icon size="16" style="color: #94a3b8"
+                >fa:fas fa-chevron-right</v-icon
+              >
             </div>
           </div>
         </v-card-text>

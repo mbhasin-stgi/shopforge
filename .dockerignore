@@ -25,8 +25,9 @@ coverage/
 *.swp
 *.swo
 
-# ─── Local Docker (dev-only compose files and scripts) ────────────────
-compose/local/
+# ─── Local Docker compose overrides (but NOT the startup scripts) ─────
+# compose/local/ must NOT be excluded — the local Dockerfiles COPY
+# startup scripts (entrypoint, start, celery/worker/start, etc.) from it.
 compose/pytest.yml
 
 # ─── Environment files (NEVER send secrets to Docker daemon) ──────────

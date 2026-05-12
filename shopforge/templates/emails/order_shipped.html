@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your ShopForge Order Has Shipped</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f4f5; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 32px auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .header { background: #10b981; padding: 32px; text-align: center; }
+    .header h1 { color: #fff; margin: 0; font-size: 24px; }
+    .body { padding: 32px; }
+    .order-info { background: #f9fafb; border-radius: 6px; padding: 16px; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    th { background: #f3f4f6; text-align: left; padding: 10px 12px; font-size: 12px; text-transform: uppercase; color: #6b7280; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    .footer { background: #f9fafb; padding: 20px 32px; text-align: center; color: #9ca3af; font-size: 12px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Your Order Is On Its Way! 📦</h1>
+  </div>
+  <div class="body">
+    <p>Hi {{ order.customer.get_full_name|default:order.customer.email }},</p>
+    <p>Great news — your order has shipped and is on its way to you!</p>
+
+    <div class="order-info">
+      <strong>Order Number:</strong> {{ order.order_number }}<br>
+      {% if order.tracking_number %}
+      <strong>Tracking Number:</strong> {{ order.tracking_number }}<br>
+      {% endif %}
+      <strong>Shipping To:</strong> {{ order.shipping_address_line1 }}, {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal_code }}
+    </div>
+
+    <table>
+      <thead><tr><th>Product</th><th>Qty</th><th>Price</th></tr></thead>
+      <tbody>
+        {% for item in order.items.all %}
+        <tr>
+          <td>{{ item.product_name }}<br><small style="color:#6b7280;">SKU: {{ item.product_sku }}</small></td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.price_at_purchase }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p style="text-align:right;"><strong>Total: ${{ order.total }}</strong></p>
+    <p>Questions? Reply to this email or visit your <a href="{{ site_url }}/orders/{{ order.id }}">order page</a>.</p>
+  </div>
+  <div class="footer">
+    &copy; ShopForge. All rights reserved.
+  </div>
+</div>
+</body>
+</html>

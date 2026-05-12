@@ -88,6 +88,12 @@ async function handleLogout() {
 
           <v-list width="200" rounded="lg" elevation="4" class="mt-1">
             <v-list-item
+              :to="{ name: 'profile' }"
+              prepend-icon="fa:fas fa-user"
+              title="My Profile"
+              rounded="lg"
+            />
+            <v-list-item
               :to="{ name: 'orders' }"
               prepend-icon="fa:fas fa-box"
               title="My Orders"
@@ -105,19 +111,29 @@ async function handleLogout() {
         </v-menu>
       </template>
 
-      <!-- Guest sign-in button -->
-      <v-btn
-        v-else
-        :to="{ name: 'login' }"
-        color="primary"
-        variant="flat"
-        rounded="lg"
-        size="small"
-        class="mr-2 ml-1"
-        prepend-icon="fa:fas fa-right-to-bracket"
-      >
-        Sign In
-      </v-btn>
+      <!-- Guest buttons -->
+      <template v-else>
+        <v-btn
+          :to="{ name: 'register' }"
+          variant="tonal"
+          rounded="lg"
+          size="small"
+          class="mr-1 ml-1"
+        >
+          Register
+        </v-btn>
+        <v-btn
+          :to="{ name: 'login' }"
+          color="primary"
+          variant="flat"
+          rounded="lg"
+          size="small"
+          class="mr-2"
+          prepend-icon="fa:fas fa-right-to-bracket"
+        >
+          Sign In
+        </v-btn>
+      </template>
     </template>
   </v-app-bar>
 </template>

@@ -95,11 +95,19 @@ class Order(UUIDModel, TimeStampedModel):
         super().save(*args, **kwargs)
 
     def _generate_order_number(self):
-        """Generate a unique, human-readable order number."""
-        import time
+        """Generate a unique, human-readable order number.
 
-        timestamp = int(time.time() * 1000) % 10000000
-        return f"SF-{timestamp}"
+        Uses the current date + a random hex suffix to avoid collisions under
+        concurrent load. The `unique=True` constraint on `order_number` acts
+        as the final guard; callers should retry on IntegrityError if needed.
+        """
+        import uuid
+
+        from django.utils import timezone
+
+        date_part = timezone.now().strftime("%Y%m")
+        random_part = uuid.uuid4().hex[:8].upper()
+        return f"SF-{date_part}-{random_part}"
 
     def calculate_totals(self):
         """Recalculate order totals from line items."""

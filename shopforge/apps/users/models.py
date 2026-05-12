@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from shopforge.apps.core.models import TimeStampedModel
+from shopforge.apps.users.managers import UserManager
 
 
 class User(AbstractUser, TimeStampedModel):
@@ -36,6 +37,8 @@ class User(AbstractUser, TimeStampedModel):
     )
     phone_number = models.CharField(max_length=20, blank=True)
     is_email_verified = models.BooleanField(default=False)
+
+    objects = UserManager()
 
     # Use email as the login field (not username)
     USERNAME_FIELD = "email"

@@ -1,0 +1,11 @@
+Hi {{ order.customer.get_full_name|default:order.customer.email }},
+
+Your order {{ order.order_number }} has been cancelled.
+
+If you did not request this cancellation or have questions, please reply to this email.
+
+Any reserved inventory has been released. If a payment was processed, a refund will be issued within 3-5 business days.
+
+Thanks,
+The ShopForge Team
+{{ site_url }}

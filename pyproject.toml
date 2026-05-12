@@ -15,7 +15,7 @@ readme = "README.md"
 python = "^3.11"
 
 # Django ecosystem
-Django = "~4.2"                          # LTS version - security patches until April 2026
+Django = "~5.2"                          # LTS version - security patches until April 2028
 djangorestframework = "^3.14"            # REST API framework
 django-environ = "^0.11"                 # Environment variables made easy
 django-model-utils = "^4.3"             # TimeStampedModel, StatusModel, etc.
@@ -35,15 +35,17 @@ flower = "^2.0"                          # Celery monitoring web UI
 django-celery-beat = "^2.6"              # Database-backed periodic task scheduler
 
 # Security & Auth
-django-allauth = "^0.61"                # Authentication (social, email, etc.)
+django-allauth = ">=65.14.1"            # Authentication (social, email, etc.) — CVE-2025-65430/31, CVE-2026-27982
 djangorestframework-simplejwt = "^5.3"  # JWT tokens for API auth
 dj-rest-auth = "^6.0"                   # REST endpoints for auth (login, logout, register)
 # Utilities
-Pillow = "^10.2"                         # Image processing
+Pillow = ">=12.2.0"                      # Image processing — CVE-2026-25990/40192/42308/10/11
+urllib3 = ">=2.7.0"                     # HTTP client (transitive) — CVE-2026-44431/32
 django-storages = "^1.14"               # Cloud storage backends (S3, GCS, etc.)
 gunicorn = "^22.0"                       # Production WSGI server
 whitenoise = "^6.6"                      # Static file serving
 sentry-sdk = "^1.40"                     # Error monitoring
+python-json-logger = "^2.0"             # Structured JSON logging for production
 cryptography = ">=43.0"                  # Cryptographic recipes
 
 # ============================================================
@@ -164,8 +166,8 @@ markers = [
 norecursedirs = ["venv/*", ".git", "node_modules"]
 python_files = ["tests.py", "test_*.py"]
 filterwarnings = [
-    "ignore::django.utils.deprecation.RemovedInDjango50Warning",
-    "ignore::django.utils.deprecation.RemovedInDjango51Warning",
+    "ignore::django.utils.deprecation.RemovedInDjango60Warning",
+    "ignore::django.utils.deprecation.RemovedInDjango61Warning",
 ]
 
 # ============================================================
@@ -189,7 +191,7 @@ relative_files = true
 [tool.coverage.report]
 skip_empty = true
 precision = 2
-fail_under = 50
+fail_under = 80
 show_missing = true
 skip_covered = true
 omit = [

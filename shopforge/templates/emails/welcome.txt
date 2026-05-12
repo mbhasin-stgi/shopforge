@@ -1,0 +1,12 @@
+Hi {{ user.get_full_name|default:user.email }},
+
+Welcome to ShopForge! Your account has been created.
+
+Here's what you can do:
+- Browse products: {{ site_url }}/products
+- Save to wishlist: {{ site_url }}/wishlist
+- Track orders: {{ site_url }}/orders
+
+Thanks for joining us,
+The ShopForge Team
+{{ site_url }}

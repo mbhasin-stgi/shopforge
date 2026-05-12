@@ -194,3 +194,45 @@ class ProductImage(TimeStampedModel):
     def __str__(self):
         """Return image info."""
         return f"Image for {self.product.name} (#{self.display_order})"
+
+
+class ProductVariant(TimeStampedModel):
+    """
+    A purchasable variant of a product (e.g. size S/M/L, colour Red/Blue).
+
+    Each variant has its own SKU and optional price override.
+    Attributes are stored as a JSON dict, e.g. {"size": "M", "color": "Red"}.
+    Stock is tracked at the variant level via StockRecord.variant FK.
+    """
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variants")
+    name = models.CharField(max_length=200, help_text="Human-readable variant name, e.g. 'Large / Red'")
+    sku = models.CharField("SKU", max_length=100, unique=True)
+    price_override = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="If set, overrides the parent product price for this variant.",
+    )
+    attributes = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text='Variant attributes, e.g. {"size": "M", "color": "Red"}.',
+    )
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["product", "name"]
+        indexes = [
+            models.Index(fields=["sku"]),
+            models.Index(fields=["product", "is_active"]),
+        ]
+
+    def __str__(self):
+        return f"{self.product.name} — {self.name} ({self.sku})"
+
+    @property
+    def effective_price(self):
+        """Return the variant price, falling back to the parent product price."""
+        return self.price_override if self.price_override is not None else self.product.price

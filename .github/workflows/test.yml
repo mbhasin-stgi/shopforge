@@ -112,4 +112,4 @@ jobs:
       # This means PRs cannot merge if untested code lowers coverage
       - name: Check coverage threshold
         run: |
-          poetry run coverage report --fail-under=50
+          poetry run coverage report --fail-under=80

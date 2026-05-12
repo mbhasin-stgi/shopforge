@@ -1,35 +1,45 @@
 name: Build & Push
 
-# Only runs on pushes to main or version tags (e.g. v1.2.3)
-# NOT on PRs — we build the real image only after code is merged
+# Triggers ONLY after the Test CI workflow completes successfully on main.
+# This ensures images are never built from broken code.
 on:
-  push:
+  workflow_run:
+    workflows: ["Tests"]
     branches: [main]
-    tags: ["v*"]
+    types: [completed]
+  # Also allow manual trigger for hotfixes
+  workflow_dispatch:
 
-# These env vars are available to all jobs in this workflow
+# Concurrency: only one build at a time per branch; new push cancels in-progress build
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
-  REGISTRY: ghcr.io                      # GitHub Container Registry
-  IMAGE_NAME: ${{ github.repository }}   # e.g. "myorg/shopforge"
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
-    name: Build Docker Image
+    name: Build & Push Docker Image
     runs-on: ubuntu-latest
+    # Gate: only run if the triggering workflow succeeded
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     permissions:
-      contents: read    # Read the repo code
-      packages: write   # Push to GitHub Container Registry (ghcr.io)
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # For workflow_run events, checkout the SHA that triggered the test workflow
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-      # Buildx is an extended Docker build client with multi-platform support
-      # and advanced caching — required for cache-from/cache-to features
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Authenticate to ghcr.io using the auto-generated GITHUB_TOKEN
-      # No manual secret needed — GitHub provides this token automatically
       - name: Log in to Container Registry
         uses: docker/login-action@v3
         with:
@@ -37,10 +47,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Generate Docker image tags and labels automatically based on git context:
-      # - On branch push: "ghcr.io/myorg/shopforge:main"
-      # - On version tag:  "ghcr.io/myorg/shopforge:1.2.3"
-      # - On any push:     "ghcr.io/myorg/shopforge:abc1234" (git SHA)
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -51,27 +57,27 @@ jobs:
             type=semver,pattern={{version}}
             type=sha,prefix=
 
-      # Build the Vue 3 frontend assets BEFORE the Docker build
-      # The production Dockerfile copies the built dist/ folder into the image
-      - name: Build frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Build frontend assets
         run: |
           npm ci
           npm run build
 
-      # Build the Docker image and push it to ghcr.io
-      # cache-from/cache-to → reuse unchanged Docker layers from previous builds
-      # (first build is slow, subsequent builds only rebuild changed layers)
-      # build-args → bake build metadata into the image for traceability
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: compose/production/django/Dockerfile   # Created in Chapter 13
+          file: compose/production/django/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            BUILD_DATE=${{ github.event.head_commit.timestamp }}
-            VCS_REF=${{ github.sha }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp || github.run_id }}
+            VCS_REF=${{ github.event.workflow_run.head_sha || github.sha }}

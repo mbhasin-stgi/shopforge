@@ -8,3 +8,7 @@ class UsersConfig(AppConfig):
     name = "shopforge.apps.users"
     label = "users"
     verbose_name = "Users"
+
+    def ready(self):
+        """Wire up user signals on app startup."""
+        import shopforge.apps.users.signals  # noqa: F401
