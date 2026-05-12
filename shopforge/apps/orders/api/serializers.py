@@ -91,8 +91,16 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "order_number",
+            "customer_email",
+            # Financial fields — never recalculated by clients
             "subtotal",
+            "tax_amount",
+            "shipping_cost",
+            "discount_amount",
             "total",
+            # Status fields — only mutated via dedicated actions (cancel, ship, etc.)
+            "status",
+            "payment_status",
             "created_at",
             "updated_at",
         ]

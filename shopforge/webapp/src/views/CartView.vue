@@ -10,8 +10,7 @@ const router = useRouter();
 const isEmpty = computed(() => cart.items.length === 0);
 
 function checkout() {
-  // Placeholder — wire up real checkout flow when ready
-  router.push({ name: "orders" });
+  router.push({ name: "checkout" });
 }
 </script>
 

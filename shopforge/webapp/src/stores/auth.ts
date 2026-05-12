@@ -55,10 +55,51 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
+  async function register(
+    email: string,
+    password1: string,
+    password2: string,
+    firstName: string,
+    lastName: string,
+  ) {
+    const response = await api.post("/auth/registration/", {
+      email,
+      password1,
+      password2,
+      first_name: firstName,
+      last_name: lastName,
+    });
+    // dj-rest-auth registration returns { key: "..." } on auto-login
+    if (response.data.key) {
+      token.value = response.data.key;
+      localStorage.setItem("auth_token", response.data.key);
+      await fetchProfile();
+    }
+  }
+
+  async function updateProfile(data: Partial<User>) {
+    const response = await api.patch("/users/me/", data);
+    user.value = response.data;
+  }
+
   async function fetchProfile() {
     if (!token.value) return;
     const response = await api.get("/users/me/");
     user.value = response.data;
+  }
+
+  /**
+   * Bootstrap: if a token exists in localStorage but we don't have user info
+   * yet (e.g. after a page refresh), fetch the profile silently.
+   */
+  async function bootstrap() {
+    if (token.value && !user.value) {
+      await fetchProfile().catch(() => {
+        // Token is stale — clear it
+        token.value = null;
+        localStorage.removeItem("auth_token");
+      });
+    }
   }
 
   return {
@@ -69,6 +110,9 @@ export const useAuthStore = defineStore("auth", () => {
     fullName,
     login,
     logout,
+    register,
+    updateProfile,
     fetchProfile,
+    bootstrap,
   };
 });

@@ -8,3 +8,7 @@ class OrdersConfig(AppConfig):
     name = "shopforge.apps.orders"
     label = "orders"
     verbose_name = "Orders"
+
+    def ready(self):
+        """Wire up order signals on app startup."""
+        import shopforge.apps.orders.signals  # noqa: F401

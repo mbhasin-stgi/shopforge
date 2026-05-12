@@ -19,19 +19,19 @@ app.autodiscover_tasks()
 
 
 app.conf.beat_schedule = {
-    # Check for low stock every hour
+    # Check for low stock every hour — alerts admin when products fall below reorder_level
     "check-low-stock-hourly": {
         "task": "shopforge.apps.inventory.tasks.check_low_stock",
-        "schedule": crontab(minute=0),  # Every hour, on the hour
+        "schedule": crontab(minute=0),  # Top of every hour
     },
-    # Send daily order summary to admin
+    # Send daily order summary to admin at 8 AM UTC
     "daily-order-summary": {
         "task": "shopforge.apps.orders.tasks.send_daily_order_summary",
-        "schedule": crontab(hour=8, minute=0),  # Every day at 8 AM
+        "schedule": crontab(hour=8, minute=0),
     },
-    # Clean up expired cart sessions weekly
-    "cleanup-expired-sessions": {
-        "task": "shopforge.apps.orders.tasks.cleanup_expired_carts",
-        "schedule": crontab(hour=3, minute=0, day_of_week="sunday"),  # Sunday at 3 AM
+    # Cancel stale PENDING orders (no payment within 24h) every night at 2 AM UTC
+    "cleanup-stale-pending-orders": {
+        "task": "shopforge.apps.orders.tasks.cleanup_stale_pending_orders",
+        "schedule": crontab(hour=2, minute=0),
     },
 }

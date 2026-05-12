@@ -68,6 +68,11 @@ LOCAL_APPS = [
     "shopforge.apps.products",
     "shopforge.apps.orders",
     "shopforge.apps.inventory",
+    "shopforge.apps.cart",
+    "shopforge.apps.addresses",
+    "shopforge.apps.reviews",
+    "shopforge.apps.wishlist",
+    "shopforge.apps.coupons",
 ]
 
 # The order matters! Django apps first, then third-party, then local.
@@ -260,9 +265,14 @@ CELERY_RESULT_EXPIRES = 60 * 60 * 24  # 24 hours
 
 # ─── Task Routing ────────────────────────────────────────────────────
 CELERY_TASK_ROUTES = {
+    # Email tasks → emails queue (2 workers, see compose/local.yml)
     "shopforge.apps.orders.tasks.send_order_confirmation_email": {"queue": "emails"},
     "shopforge.apps.orders.tasks.send_daily_order_summary": {"queue": "emails"},
-    "shopforge.apps.inventory.tasks.*": {"queue": "inventory"},
+    # Order maintenance tasks → default queue
+    "shopforge.apps.orders.tasks.cleanup_stale_pending_orders": {"queue": "default"},
+    # Inventory tasks → inventory queue (4 workers)
+    "shopforge.apps.inventory.tasks.check_low_stock": {"queue": "inventory"},
+    "shopforge.apps.inventory.tasks.fulfill_order_stock": {"queue": "inventory"},
 }
 CELERY_TASK_DEFAULT_QUEUE = "default"
 
@@ -292,6 +302,7 @@ DEFAULT_FROM_EMAIL = "ShopForge <noreply@shopforge.dev>"
 # Override in production via env var: DJANGO_ADMIN_EMAIL=ops@yourcompany.com
 ADMIN_EMAIL = env("DJANGO_ADMIN_EMAIL", default="admin@shopforge.dev")
 ADMINS = [("ShopForge Admin", ADMIN_EMAIL)]
+SITE_URL = env("SITE_URL", default="http://localhost:8000")
 
 # ============================================================
 # SECURITY (base — production.py tightens these further)

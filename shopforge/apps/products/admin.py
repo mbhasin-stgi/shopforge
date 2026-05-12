@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Category, Product, ProductImage
+from .models import Category, Product, ProductImage, ProductVariant
 
 
 @admin.register(Category)
@@ -19,6 +19,14 @@ class CategoryAdmin(admin.ModelAdmin):
     @admin.display(description="Products")
     def product_count(self, obj):
         return obj.products.count()
+
+
+class ProductVariantInline(admin.TabularInline):
+    """Inline variant editor on the Product change page."""
+
+    model = ProductVariant
+    extra = 0
+    fields = ["name", "sku", "price_override", "attributes", "is_active"]
 
 
 class ProductImageInline(admin.TabularInline):
@@ -45,7 +53,7 @@ class ProductAdmin(admin.ModelAdmin):
     Uses `all_objects` manager so nothing is hidden.
     """
 
-    inlines = [ProductImageInline]
+    inlines = [ProductImageInline, ProductVariantInline]
 
     list_display = [
         "name",

@@ -1,5 +1,6 @@
 """Order API views."""
 
+from django.db import transaction
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -39,60 +40,63 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Create a new order.
+        Create a new order via OrderService (atomic stock check + reservation).
 
-        This is where the "thin view" principle gets tested. The view:
-        1. Validates input (serializer)
-        2. Calls the business logic (inline here, could be a service)
-        3. Returns the result
-
-        In a larger project, step 2 would be: OrderService.create_order(validated_data)
+        The service handles: stock locking, item creation, inventory reservation,
+        total calculation, and async confirmation email via on_commit hook.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
-        items_data = data.pop("items")
+        items_data_raw = data.pop("items")
 
-        # Create the order
-        order = Order.objects.create(customer=request.user, **data)
+        # Resolve product UUIDs to Product instances
+        items_data = [
+            {
+                "product": Product.objects.get(id=entry["product_id"]),
+                "quantity": entry["quantity"],
+            }
+            for entry in items_data_raw
+        ]
 
-        # Create order items with price snapshots
-        for item_data in items_data:
-            product = Product.objects.get(id=item_data["product_id"])
-            order.items.create(
-                product=product,
-                product_name=product.name,
-                product_sku=product.sku,
-                price_at_purchase=product.price,
-                quantity=item_data["quantity"],
+        from shopforge.apps.orders.services import OrderService
+
+        try:
+            order = OrderService.create_order(
+                customer=request.user,
+                items_data=items_data,
+                shipping_data=data,
             )
+        except ValueError as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Calculate totals
-        order.calculate_totals()
-
-        # ─── Async tasks ────────────────────────────
-        # These run in the background AFTER the response is sent
-
-        from shopforge.apps.inventory.tasks import reserve_stock_for_order
-        from shopforge.apps.orders.tasks import send_order_confirmation_email
-
-        send_order_confirmation_email.delay(str(order.id))
-        reserve_stock_for_order.delay(str(order.id))
-
-        # Return the created order
         output_serializer = OrderDetailSerializer(order, context={"request": request})
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["patch"])
     def cancel(self, request, pk=None):
-        """Cancel an order (only if still pending)."""
+        """
+        Cancel a pending order.
+
+        Only orders in PENDING status can be cancelled by the customer.
+        Staff can cancel orders in PENDING or CONFIRMED status.
+        Stock release is handled automatically by the pre_save signal in orders/signals.py.
+        """
         order = self.get_object()
-        if order.status != Order.Status.PENDING:
+
+        cancellable_statuses = {Order.Status.PENDING}
+        if request.user.is_staff:
+            cancellable_statuses.add(Order.Status.CONFIRMED)
+
+        if order.status not in cancellable_statuses:
             return Response(
-                {"error": "Only pending orders can be cancelled."},
+                {"error": f"Orders with status '{order.get_status_display()}' cannot be cancelled."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        order.status = Order.Status.CANCELLED
-        order.save(update_fields=["status", "updated_at"])
+
+        with transaction.atomic():
+            order.status = Order.Status.CANCELLED
+            order.save(update_fields=["status", "updated_at"])
+
         return Response(OrderDetailSerializer(order, context={"request": request}).data)
