@@ -38,7 +38,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # ══════════════════════════════════════════════════════════════════════
 # Builds Vue 3 + Vite assets. The compiled dist/ folder is copied to
 # the runtime stage — Node.js does NOT ship to production.
-FROM node:20-alpine AS frontend-build-stage
+FROM node:26-alpine AS frontend-build-stage
 
 WORKDIR /app
 
