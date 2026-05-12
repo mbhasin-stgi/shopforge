@@ -70,7 +70,7 @@ pylint = "^3.0"                          # Advanced linter
 pylint-django = "^2.5"                   # Django-specific pylint rules
 pylint-celery = "^0.3"                   # Celery-specific pylint rules
 interrogate = "^1.5"                     # Docstring coverage checker
-mypy = "^1.8"                            # Static type checker
+mypy = ">=1.8,<3.0"                            # Static type checker
 django-stubs = "^4.2"                    # Type stubs for Django
 
 # Development Tools
