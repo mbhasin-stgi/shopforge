@@ -37,7 +37,7 @@ django-celery-beat = "^2.6"              # Database-backed periodic task schedul
 # Security & Auth
 django-allauth = ">=65.14.1"            # Authentication (social, email, etc.) — CVE-2025-65430/31, CVE-2026-27982
 djangorestframework-simplejwt = "^5.3"  # JWT tokens for API auth
-dj-rest-auth = "^6.0"                   # REST endpoints for auth (login, logout, register)
+dj-rest-auth = ">=6,<8"                   # REST endpoints for auth (login, logout, register)
 # Utilities
 Pillow = ">=12.2.0"                      # Image processing — CVE-2026-25990/40192/42308/10/11
 urllib3 = ">=2.7.0"                     # HTTP client (transitive) — CVE-2026-44431/32
