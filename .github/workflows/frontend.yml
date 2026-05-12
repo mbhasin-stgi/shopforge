@@ -65,7 +65,7 @@ jobs:
 
       # Save coverage/ folder as a downloadable artifact for review
       - name: Upload coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: frontend-coverage
           path: coverage/
