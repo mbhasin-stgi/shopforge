@@ -12,8 +12,8 @@
     "test:run": "vitest run",
     "coverage": "vitest run --coverage",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint ./shopforge/webapp/src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
-    "lint-fix": "eslint ./shopforge/webapp/src --fix --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
+    "lint": "eslint ./shopforge/webapp/src",
+    "lint-fix": "eslint ./shopforge/webapp/src --fix",
     "format": "prettier --write \"shopforge/webapp/src/**/*.{vue,ts,js,css,scss}\"",
     "gen-types": "openapi-typescript schema.yaml -o shopforge/webapp/src/types/schema.d.ts"
   },

@@ -11,6 +11,13 @@ export default mergeConfig(
       environment: "jsdom",
       root: fileURLToPath(new URL("./", import.meta.url)),
       exclude: [...configDefaults.exclude, "e2e/*"],
+      server: {
+        deps: {
+          // Run Vuetify through Vite's transform pipeline so CSS imports
+          // are handled by the CSS plugin instead of Node's module loader.
+          inline: ["vuetify"],
+        },
+      },
       coverage: {
         provider: "v8",
         reportsDirectory: "./coverage",
