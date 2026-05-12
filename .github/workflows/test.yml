@@ -50,7 +50,7 @@ jobs:
 
     steps:
       # Step 1: Download repository code onto the runner machine
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Step 2: Install Python 3.11
       - uses: actions/setup-python@v5
