@@ -35,11 +35,12 @@ flower = "^2.0"                          # Celery monitoring web UI
 django-celery-beat = "^2.6"              # Database-backed periodic task scheduler
 
 # Security & Auth
-django-allauth = "^0.61"                # Authentication (social, email, etc.)
+django-allauth = ">=65.14.1"            # Authentication (social, email, etc.) — CVE-2025-65430/31, CVE-2026-27982
 djangorestframework-simplejwt = "^5.3"  # JWT tokens for API auth
 dj-rest-auth = "^6.0"                   # REST endpoints for auth (login, logout, register)
 # Utilities
-Pillow = "^10.2"                         # Image processing
+Pillow = ">=12.2.0"                      # Image processing — CVE-2026-25990/40192/42308/10/11
+urllib3 = ">=2.7.0"                     # HTTP client (transitive) — CVE-2026-44431/32
 django-storages = "^1.14"               # Cloud storage backends (S3, GCS, etc.)
 gunicorn = "^22.0"                       # Production WSGI server
 whitenoise = "^6.6"                      # Static file serving
