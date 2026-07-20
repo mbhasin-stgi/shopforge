@@ -17,12 +17,12 @@ python = "^3.11"
 # Django ecosystem
 Django = "~5.2"                          # LTS version - security patches until April 2028
 djangorestframework = "^3.14"            # REST API framework
-django-environ = "^0.11"                 # Environment variables made easy
+django-environ = ">=0.11,<0.15"                 # Environment variables made easy
 django-model-utils = "^4.3"             # TimeStampedModel, StatusModel, etc.
 django-filter = "^23.5"                  # Queryset filtering for DRF
 django-cors-headers = "^4.3"            # CORS headers for API
 django-extensions = "^3.2"              # shell_plus, show_urls, etc.
-drf-spectacular = "^0.27"               # OpenAPI 3.0 schema generation
+drf-spectacular = ">=0.27,<0.31"               # OpenAPI 3.0 schema generation
 
 # Database
 psycopg2-binary = "^2.9"                # PostgreSQL adapter (binary for dev speed)
@@ -80,7 +80,7 @@ debugpy = "^1.8"                         # VS Code Python debugger
 ipython = "^8.20"                        # Enhanced Python shell
 django-coverage-plugin = "^3.1"         # Coverage for Django templates
 pre-commit = "^3.6"                      # Git hook framework
-uvicorn = {version = "^0.27", extras = ["standard"]}  # ASGI server for dev
+uvicorn = {version = ">=0.27,<0.52", extras = ["standard"]}  # ASGI server for dev
 virtualenv = ">=20,<21"                  # Pin to v20.x; v21 removed LogCmd breaking build isolation
 
 # Documentation
